@@ -4,6 +4,9 @@ import sys
 import email
 
 
+QUOTE = "\""
+BACKSLASH = "\\"
+
 def process_text(text):
     """
     Processes a single string of text and returns an untagged version of it.
@@ -28,6 +31,20 @@ def process_text(text):
     return raw_text
 
 
+def process_multipart(part):
+    """Recursively processes a part of the message body content."""
+    maintype = part.get_content_maintype()
+    if maintype == 'text':
+        return part.get_payload()
+    elif maintype == 'multipart':
+        text = ''
+        for sub_part in part.get_payload():
+            text += process_multipart(sub_part)
+        return text
+    else:
+        return ''
+
+
 def process_message(mime_file):
     """
     Separately processes the email stored in the provided MIME file, and
@@ -36,12 +53,8 @@ def process_message(mime_file):
     message = email.message_from_file(mime_file)
     maintype = message.get_content_maintype()
     body = ''
-    if maintype == 'multipart':
-        for part in message.get_payload():
-            if part.get_content_maintype() == 'text':
-                body += part.get_payload()
-    elif maintype == 'text':
-        body = message.get_payload()
+    for part in message.walk():
+        body += process_multipart(part)
     body = process_text(body)
     return dict((key, val) for key, val in message.items()), body
 
@@ -60,6 +73,7 @@ def convert(data_dir, file_range):
         mime_file = open(fname, 'r')
         header, body = process_message(mime_file)
         mime_file.close()
+        body = body.replace(QUOTE, BACKSLASH + QUOTE)
         print body
         print labels[num-1].strip() + " (" + label + ")"
 
