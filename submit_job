@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/lusr/opt/condor/bin/condor_submit "$@"

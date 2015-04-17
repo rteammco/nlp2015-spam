@@ -1,0 +1,20 @@
+universe = vanilla
+
+Environment = CLASSPATH=/u/teammco/Documents/CS388_NLP/A3/stanford-parser-full-2015-01-30/stanford-parser.jar:/u/teammco/Documents/CS388_NLP/A3
+Initialdir = /u/teammco/Documents/CS388_NLP/A3
+Executable = /u/teammco/Documents/Java/jdk1.8.0_40/bin/java
+
++Group   = "GRAD"
++Project = "INSTRUCTIONAL"
++ProjectDescription = "CS388 Homework 3"
+
+Log = /scratch/cluster/teammco/CS388L_Proj/
+
+Notification = complete
+Notify_user = teammco@cs.utexas.edu
+
+Arguments = -mx1500m ActiveLearningParser data_train.mrg data_unlabeled.mrg data_test.mrg -iters 20 -bestk 1500 -method RANDOM -job job001 -outfile NEW_OUTPUT_RANDOM.txt
+
+Output = OUTPUT_RANDOM_PIPE.out
+Error  = OUTPUT_RANDOM_PIPE.err
+Queue 1
