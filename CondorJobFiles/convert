@@ -2,7 +2,7 @@ universe = vanilla
 
 Environment  = CLASSPATH=/scratch/cluster/teammco/CS388L_Proj/weka-3-6-12/weka.jar:/scratch/cluster/teammco/CS388L_Proj
 Initialdir   = /scratch/cluster/teammco/CS388L_Proj
-Executable   = /usr/local/bin/python
+Executable   = /u/teammco/Documents/Java/jdk1.8.0_40/bin/java
 Requirements = InMastodon
 
 +Group   = "GRAD"
@@ -13,12 +13,12 @@ Notification = complete
 Notify_user  = teammco@cs.utexas.edu
 
 
-Log = CondorLogs/preprocess.log
+Log = CondorLogs/convert.log
 
-Arguments = preprocess.py trec07p 1 25000 Data/train_bulk.arff
+Arguments = -Xmx1024m weka.filters.unsupervised.attribute.StringToWordVector -C -L -i Data/train_bulk.arff -o Data/train.arff
 
-Output = CondorOutput/preprocess.out
-Error  = CondorOutput/preprocess.err
+Output = CondorOutput/convert.out
+Error  = CondorOutput/convert.err
 
 
 Queue 1
