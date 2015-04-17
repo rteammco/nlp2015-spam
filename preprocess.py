@@ -59,7 +59,7 @@ def process_message(mime_file):
     return dict((key, val) for key, val in message.items()), body
 
 
-def convert(data_dir, file_range):
+def preprocess(data_dir, file_range):
     """
     Converts the given data.
     """
@@ -86,4 +86,4 @@ if __name__ == '__main__':
     range_start = sys.argv[2]
     range_end = sys.argv[3]
     file_range = (int(range_start), int(range_end))
-    convert(data_dir, file_range)
+    preprocess(data_dir, file_range)
