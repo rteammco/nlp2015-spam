@@ -36,7 +36,6 @@ def process_message(mime_file):
     message = email.message_from_file(mime_file)
     maintype = message.get_content_maintype()
     body = ''
-    header = ''
     if maintype == 'multipart':
         for part in message.get_payload():
             if part.get_content_maintype() == 'text':
@@ -44,7 +43,7 @@ def process_message(mime_file):
     elif maintype == 'text':
         body = message.get_payload()
     body = process_text(body)
-    return header, body
+    return dict((key, val) for key, val in message.items()), body
 
 
 def convert(data_dir, file_range):
