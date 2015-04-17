@@ -2,8 +2,11 @@
 
 path="/scratch/cluster/teammco/CS388L_Proj"
 
-in="$path/Data/$1.arff"
-out="$path/Data/$2.arff"
+train_bulk="$path/Data/train_bulk.arff"
+train_std="$path/Data/train_std.arff"
+test_bulk="$path/Data/test_bulk.arff"
+test_std="$path/Data/test_std.arff"
+
 classifier="weka.filters.unsupervised.attribute.StringToWordVector"
 
 cp_weka="$path/weka-3-6-12/weka.jar"
@@ -11,4 +14,4 @@ cp_proj="$path"
 
 # -C word counts
 # -L lower case
-java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -C -L -i $in -o $out
+java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -C -L -b -i $train_bulk -o $train_std -r $test_bulk -s $test_std

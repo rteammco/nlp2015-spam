@@ -15,7 +15,7 @@ Notify_user  = teammco@cs.utexas.edu
 
 Log = CondorLogs/naivebayes.log
 
-Arguments = -Xmx1024m weka.classifiers.bayes.NaiveBayes -t Data/train.arff -T Data/test.arff
+Arguments = -Xmx1024m weka.classifiers.bayes.NaiveBayes -c 1 -t Data/train_std.arff -T Data/test_std.arff
 
 Output = CondorOutput/naivebayes.out
 Error  = CondorOutput/naivebayes.err
