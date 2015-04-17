@@ -3,6 +3,29 @@
 import sys
 
 
+def process(message):
+    """
+    Processes a single message and returns the raw text.
+    """
+    words = message.split()
+    intag = False
+    raw_words = []
+    for word in words:
+        untagged = ''
+        for ch in word:
+            if ch == '<':
+                intag = True
+            elif ch == '>':
+                intag = False
+            elif not intag:
+                untagged += ch
+        if len(untagged) > 0:
+            raw_words.append(untagged)
+    raw_text = ' '.join(raw_words)
+    print raw_text
+    return raw_text
+
+
 def convert(data_dir, file_range):
     """
     Converts the given data.
@@ -13,7 +36,12 @@ def convert(data_dir, file_range):
     data_dir = data_dir + '/data'
     for num in range(file_range[0], file_range[1]+1):
         label = labels[num-1].split()[0]
-        print data_dir + 'inmail.' + str(num)
+        fname = data_dir + '/inmail.' + str(num)
+        msg_file = open(fname, 'r')
+        message = msg_file.read()
+        msg_file.close()
+        raw_text = process(message)
+        #print message
         print labels[num-1].strip() + " (" + label + ")"
 
 
