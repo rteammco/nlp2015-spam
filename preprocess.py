@@ -30,10 +30,8 @@ def filter_words(words):
                 parts = word.split(symbol)
                 words.extend(parts)
                 split = True
-                print parts
                 break
         if not split and len(word) > 0:
-            print word
             filtered.append(word)
     return filtered
 
