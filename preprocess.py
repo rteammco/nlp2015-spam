@@ -22,7 +22,8 @@ def filter_words(words):
     """
     filtered = []
     for word in words:
-        word = re.sub(FLOAT_REGEX, '', word)
+        # Replace digits with arbitrary symbol, and split around it later
+        word = re.sub(FLOAT_REGEX, SYMBOLS[0], word)
         split = False
         for symbol in SYMBOLS:
             if symbol in word:
