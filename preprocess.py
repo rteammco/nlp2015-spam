@@ -28,6 +28,18 @@ def process_text(text):
     return raw_text
 
 
+def extract_body_text(payload):
+    """
+    """
+    if payload.get_content_maintype() == 'text':
+        return payload.get_payload()
+    else:
+        text = ''
+        for part in payload:
+            text += extract_body_text(part)
+        return text
+
+
 def process_message(mime_file):
     """
     Separately processes the email stored in the provided MIME file, and
@@ -39,11 +51,15 @@ def process_message(mime_file):
     header = ''
     if maintype == 'multipart':
         for part in message.get_payload():
-            if part.get_content_maintype() == 'text':
-                body += part.get_payload()
+            body += extract_body_text(part)
+            #if part.get_content_maintype() == 'text':
+            #    body += part.get_payload()
     elif maintype == 'text':
         body = message.get_payload()
     body = process_text(body)
+    body2 = ''
+    for part in message.walk():
+        print part.get_content_maintype()
     return header, body
 
 
