@@ -1,0 +1,22 @@
+% Example ARFF file.
+
+@RELATION email
+
+
+@ATTRIBUTE dummy_str_zero NUMERIC
+
+@ATTRIBUTE every NUMERIC
+@ATTRIBUTE single NUMERIC
+@ATTRIBUTE seen NUMERIC
+@ATTRIBUTE word NUMERIC
+@ATTRIBUTE in NUMERIC
+@ATTRIBUTE the NUMERIC
+@ATTRIBUTE training NUMERIC
+@ATTRIBUTE set NUMERIC
+
+@ATTRIBUTE class {spam, ham}
+
+
+@DATA
+{1 3, 4 2, 5 2, 6 9, 9 spam}
+{1 1, 2 2, 3 2, 6 5, 9 ham}

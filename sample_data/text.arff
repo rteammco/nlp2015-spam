@@ -1,0 +1,13 @@
+% Example ARFF file.
+
+@RELATION email
+
+
+@ATTRIBUTE header STRING
+@ATTRIBUTE body STRING
+@ATTRIBUTE spam_or_ham_class {spam, ham}
+
+
+@DATA
+"This is a header", "This is a body with \"escaped\" quotations and \n newlines.", ham
+"Free stuff!!", "Want to try out our free trial? Only 10 days left!\n\nwww.virus.com/phishing. Class in class?", spam

@@ -1,0 +1,35 @@
+@relation 'email-weka.filters.unsupervised.attribute.StringToWordVector-R1,2-W1000-prune-rate-1.0-C-N0-L-stemmerweka.core.stemmers.NullStemmer-M1-tokenizerweka.core.tokenizers.WordTokenizer -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?!\"'
+
+@attribute spam_or_ham_class {spam,ham}
+@attribute 10 numeric
+@attribute a numeric
+@attribute and numeric
+@attribute body numeric
+@attribute class numeric
+@attribute com/phishing numeric
+@attribute days numeric
+@attribute escaped numeric
+@attribute free numeric
+@attribute header numeric
+@attribute in numeric
+@attribute is numeric
+@attribute left numeric
+@attribute newlines numeric
+@attribute only numeric
+@attribute our numeric
+@attribute out numeric
+@attribute quotations numeric
+@attribute stuff numeric
+@attribute this numeric
+@attribute to numeric
+@attribute trial numeric
+@attribute try numeric
+@attribute virus numeric
+@attribute want numeric
+@attribute with numeric
+@attribute www numeric
+
+@data
+
+{0 ham,2 2,3 1,4 1,8 1,10 1,12 2,14 1,18 1,20 2,26 1}
+{1 1,5 2,6 1,7 1,9 2,11 1,13 1,15 1,16 1,17 1,19 1,21 1,22 1,23 1,24 1,25 1,27 1}
