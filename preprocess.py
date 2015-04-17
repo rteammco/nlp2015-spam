@@ -1,11 +1,41 @@
 # Python script to convert the raw email data into .arff format for Weka.
 
 import sys
+import re
 import email
 
 
-QUOTE = "\""
-BACKSLASH = "\\"
+QUOTE = '\"'
+BACKSLASH = '\\'
+
+FLOAT_REGEX = r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
+
+SYMBOLS = [
+    '$', '-', '/', '=', '@'
+]
+
+
+def filter_words(words):
+    """
+    Removes all unwanted symbols from each word, and splits words around
+    unwanted delimiters. Also removes digits.
+    """
+    filtered = []
+    for word in words:
+        word = re.sub(FLOAT_REGEX, '', word)
+        split = False
+        for symbol in SYMBOLS:
+            if symbol in word:
+                parts = word.split(symbol)
+                words.extend(parts)
+                split = True
+                print parts
+                break
+        if not split and len(word) > 0:
+            print word
+            filtered.append(word)
+    return filtered
+
 
 def process_text(text):
     """
@@ -14,6 +44,7 @@ def process_text(text):
     and returns the string as raw words.
     """
     words = text.split()
+    words = filter_words(words)
     intag = False
     raw_words = []
     for word in words:
