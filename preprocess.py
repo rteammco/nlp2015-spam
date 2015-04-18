@@ -64,6 +64,8 @@ def process_text(text):
 
 def process_multipart(part):
     """Recursively processes a part of the message body content."""
+    if type(part) is str:
+        return part
     maintype = part.get_content_maintype()
     if maintype == 'text':
         return part.get_payload()
@@ -92,7 +94,12 @@ def process_message(mime_file):
 
 def preprocess(data_dir, file_range, outfname):
     """
-    Converts the given data.
+    Converts the data from each file in the given range into a single string
+    of words extracted out of the message body. The words are pre-filtered
+    to remove symbols, numbers, and other filler content.
+    The processed data is compiled into a single ARFF file, which can then
+    be further preprocessed and converted into a bag-of-words format using
+    Weka's filter tools.
     """
     label_file = open(data_dir + '/full/index', 'r')
     labels = label_file.readlines()
@@ -120,6 +127,7 @@ def preprocess(data_dir, file_range, outfname):
     outfile.close()
 
 
+# Process args and run the preprocessing code.
 if __name__ == '__main__':
     if len(sys.argv) < 5:
         print "Usage: <data_dir> <range_start> <range_end> <outfile>"
