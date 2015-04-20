@@ -7,7 +7,8 @@ train_std="$path/Data/train_std.arff"
 test_bulk="$path/Data/test_bulk.arff"
 test_std="$path/Data/test_std.arff"
 
-classifier="weka.filters.unsupervised.attribute.StringToWordVector"
+filter="weka.filters.unsupervised.attribute.StringToWordVector"
+stopwords="stopwords.txt"
 
 cp_weka="$path/weka-3-6-12/weka.jar"
 cp_proj="$path"
@@ -15,4 +16,5 @@ cp_proj="$path"
 # Optional flags:
 #   -C  labels include word counts, not just binary (is word there or not).
 #   -L  converts everything to lower case.
-java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -C -L -b -i $train_bulk -o $train_std -r $test_bulk -s $test_std
+#   -b  bulk (allows both training and testing conversion)
+java -Xmx1024m -cp "$cp_weka:$cp_proj" $filter -stopwords $stopwords -C -L -b -i $train_bulk -o $train_std -r $test_bulk -s $test_std
