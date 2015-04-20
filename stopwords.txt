@@ -238,7 +238,7 @@ like
 liked
 likely
 little
-ll"); //added to avoid words like you'll,I'll e
+ll
 look
 looking
 looks
@@ -467,7 +467,7 @@ uucp
 v
 value
 various
-ve"); //added to avoid words like I've,you've e
+ve
 very
 via
 viz
