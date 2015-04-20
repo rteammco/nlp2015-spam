@@ -12,6 +12,7 @@ classifier="weka.filters.unsupervised.attribute.StringToWordVector"
 cp_weka="$path/weka-3-6-12/weka.jar"
 cp_proj="$path"
 
-# -C word counts
-# -L lower case
+# Optional flags:
+#   -C  labels include word counts, not just binary (is word there or not).
+#   -L  converts everything to lower case.
 java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -C -L -b -i $train_bulk -o $train_std -r $test_bulk -s $test_std
