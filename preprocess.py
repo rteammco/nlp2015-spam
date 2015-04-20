@@ -21,8 +21,8 @@ ASCII_MAX = 126
 
 # Alls symbols to be ignored by the filters.
 SYMBOLS = [
-    '$', '-', '/', '=', '@', '#', '%', '\\', '&', '*', '+', '[', ']', '_',
-    '\'', '{', '}', '|', '~'
+    '~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+',
+    '=', '{', '}', '[', ']', '\\', '|', ':', ';', '"', '\'', ',', '.', '?', '/'
 ]
 
 
@@ -31,6 +31,7 @@ def filter_words(words):
     Removes all unwanted symbols from each word, and splits words around
     unwanted delimiters. Also removes digits. After all filtering is done,
     stopwords are also removed (assuming stopwords list is filled).
+    NOTE: The words are NOT converted into lowercase in the final output.
     This is a word-by-word preprocessing step.
     """
     filtered = []
@@ -44,7 +45,7 @@ def filter_words(words):
                 words.extend(parts)
                 split = True
                 break
-        if (not split) and (len(word) > 0) and (word not in STOPWORDS):
+        if (not split) and (len(word) > 0) and (word.lower() not in STOPWORDS):
             filtered.append(word)
     return filtered
 
@@ -54,10 +55,11 @@ def process_text(text):
     Processes a single string of text and returns an untagged version of it.
     That is, removes any HTML tags, and any content contained inside the tags,
     and returns the string as raw words.
-    This is a character-by-character preprocessing step.
+    This is a character-by-character preprocessing step that also calls the
+    word-for-word preprocessing.
     """
+    # remove HTML tags and non-ascii characters:
     words = text.split()
-    words = filter_words(words)
     intag = False
     raw_words = []
     for word in words:
@@ -71,6 +73,8 @@ def process_text(text):
                 untagged += ch
         if len(untagged) > 0:
             raw_words.append(untagged)
+    # remove stopwords, numbers, and symbols:
+    raw_words = filter_words(raw_words)
     raw_text = ' '.join(raw_words)
     return raw_text
 
@@ -144,12 +148,13 @@ def load_stopwords(fname):
     """
     Reads the file of the given filename and saves all the stopwords which
     will be used in the filtering process to remove them from the text.
+    All stopwords will be converted to lowercase if they are not already.
     """
     stopwords_file = open(fname, 'r')
     for line in stopwords_file:
         stopword = line.strip()
         if (len(stopword) > 0) and (stopword[0] != '#'):
-            STOPWORDS.append(stopword)
+            STOPWORDS.append(stopword.lower())
     stopwords_file.close()
 
 
