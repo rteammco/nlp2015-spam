@@ -5,19 +5,25 @@ import re
 import email
 
 
+# Escaped quote and backslash characters (for readability).
 QUOTE = '\"'
 BACKSLASH = '\\'
 
+# Fill this list using load_stopwords() function.
+STOPWORDS = []
+
+# Regex to match any number (int or float) within a string.
 FLOAT_REGEX = r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
 
+# Range of allowable ASCII characters (rest are ignored).
+ASCII_MIN = 32
+ASCII_MAX = 126
+
+# Alls symbols to be ignored by the filters.
 SYMBOLS = [
     '$', '-', '/', '=', '@', '#', '%', '\\', '&', '*', '+', '[', ']', '_',
     '\'', '{', '}', '|', '~'
 ]
-
-
-# Fill this list using load_stopwords() function.
-STOPWORDS = []
 
 
 def filter_words(words):
@@ -25,6 +31,7 @@ def filter_words(words):
     Removes all unwanted symbols from each word, and splits words around
     unwanted delimiters. Also removes digits. After all filtering is done,
     stopwords are also removed (assuming stopwords list is filled).
+    This is a word-by-word preprocessing step.
     """
     filtered = []
     for word in words:
@@ -47,6 +54,7 @@ def process_text(text):
     Processes a single string of text and returns an untagged version of it.
     That is, removes any HTML tags, and any content contained inside the tags,
     and returns the string as raw words.
+    This is a character-by-character preprocessing step.
     """
     words = text.split()
     words = filter_words(words)
@@ -59,7 +67,7 @@ def process_text(text):
                 intag = True
             elif ch == '>':
                 intag = False
-            elif not intag:
+            elif (not intag) and (ASCII_MIN <= ord(ch) <= ASCII_MAX):
                 untagged += ch
         if len(untagged) > 0:
             raw_words.append(untagged)
