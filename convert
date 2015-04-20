@@ -16,5 +16,6 @@ cp_proj="$path"
 # Optional flags:
 #   -C  labels include word counts, not just binary (is word there or not).
 #   -L  converts everything to lower case.
-#   -b  bulk (allows both training and testing conversion)
-java -Xmx1024m -cp "$cp_weka:$cp_proj" $filter -stopwords $stopwords -C -L -b -i $train_bulk -o $train_std -r $test_bulk -s $test_std
+#   -S  stopwords are removed (doesn't really work though).
+#   -b  bulk (allows both training and testing conversion).
+java -Xmx1024m -cp "$cp_weka:$cp_proj" $filter -C -L -b -i $train_bulk -o $train_std -r $test_bulk -s $test_std

@@ -16,10 +16,15 @@ SYMBOLS = [
 ]
 
 
+# Fill this list using load_stopwords() function.
+STOPWORDS = []
+
+
 def filter_words(words):
     """
     Removes all unwanted symbols from each word, and splits words around
-    unwanted delimiters. Also removes digits.
+    unwanted delimiters. Also removes digits. After all filtering is done,
+    stopwords are also removed (assuming stopwords list is filled).
     """
     filtered = []
     for word in words:
@@ -32,7 +37,7 @@ def filter_words(words):
                 words.extend(parts)
                 split = True
                 break
-        if not split and len(word) > 0:
+        if (not split) and (len(word) > 0) and (word not in STOPWORDS):
             filtered.append(word)
     return filtered
 
@@ -127,14 +132,30 @@ def preprocess(data_dir, file_range, outfname):
     outfile.close()
 
 
+def load_stopwords(fname):
+    """
+    Reads the file of the given filename and saves all the stopwords which
+    will be used in the filtering process to remove them from the text.
+    """
+    stopwords_file = open(fname, 'r')
+    for line in stopwords_file:
+        stopword = line.strip()
+        if (len(stopword) > 0) and (stopword[0] != '#'):
+            STOPWORDS.append(stopword)
+    stopwords_file.close()
+
+
 # Process args and run the preprocessing code.
 if __name__ == '__main__':
     if len(sys.argv) < 5:
-        print "Usage: <data_dir> <range_start> <range_end> <outfile>"
+        print "Usage: <data_dir> <range_start> <range_end> <outfile> [stopword file]"
         exit(0)
     data_dir = sys.argv[1]
     range_start = sys.argv[2]
     range_end = sys.argv[3]
     outfname = sys.argv[4]
+    if len(sys.argv) > 5:
+        stopwords_file = sys.argv[5]
+        load_stopwords(stopwords_file)
     file_range = (int(range_start), int(range_end))
     preprocess(data_dir, file_range, outfname)
