@@ -1,7 +1,20 @@
 #!/bin/bash
 
+# This script provides an example on how to run Weka with a classifier on
+# the testing and training data sets. It is assumed that the data sets are
+# standardized (see the convert script) and in the following files:
+#   Data/train_std.arff
+#   Data/test_std.arff
+#
+# Set the variable "classifier" below to a desired Weka object (see Weka
+# documentation) that can be used as a classifier. Three examples are
+# below (two commented out).
+
+
+
 path="/scratch/cluster/teammco/CS388L_Proj"
 
+# Define Weka classpaths
 cp_weka="$path/weka-3-6-12/weka.jar"
 cp_proj="$path"
 

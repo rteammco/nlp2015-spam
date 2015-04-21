@@ -1,3 +1,10 @@
 #!/bin/bash
 
+# Submits a job to condor (because the submit nodes don't have the condor
+# executables in the environment path.
+#
+# Example useage:
+#   ./condor_submit CondorJobFiles/naivebayes
+
+
 /lusr/opt/condor/bin/condor_submit "$@"

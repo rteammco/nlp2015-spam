@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# This script converts the training and testing data sets that are produced
+# by the Python "preprocessor.py" code into a format usable by Weka. Both
+# training and testing files are necessary so they can be converted and
+# standardized for the classifier.
+#
+# It is assumed that the training data and testing data files produced by
+# the preprocessor code are available in the following files:
+#   Data/train_bulk.arff
+#   Data/test_bulk.arff
+#
+# Once converted, the files ready for the classifier will be as follows:
+#   Data/train_std.arff
+#   Data/test_std.arff
+
+
+
 path="/scratch/cluster/teammco/CS388L_Proj"
 
 train_bulk="$path/Data/train_bulk.arff"
