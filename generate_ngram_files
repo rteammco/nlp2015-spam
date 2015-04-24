@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Generates all possible data sets for the N-Gram training sets:
+#   {regular words, lowercase words, regular characters, lowercase characters}
+# Each iteration will produce two files: one for spam messages and another
+# for ham messages, prefaced with "spam_" and "ham_", respectively.
+# e.g. the first line will produce the following two files:
+#   spam_ngram_upper_words
+#   ham_ngram_upper_words
+
+echo "Generating uppercase words file..."
+python preprocess.py trec07p 1 60000 ngram_upper_words --ngrams
+
+echo "Generating lowercase words file..."
+python preprocess.py trec07p 1 60000 ngram_lower_words --ngrams --ngram-lower
+
+echo "Generating uppercase characters file..."
+python preprocess.py trec07p 1 60000 ngram_upper_chars --ngrams --ngram-chars
+
+echo "Generating lowercase characters file..."
+python preprocess.py trec07p 1 60000 ngram_lower_chars --ngrams --ngram-lower --ngram-chars
+
+echo "All done. SUCCESS!"
