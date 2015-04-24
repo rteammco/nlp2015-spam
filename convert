@@ -16,18 +16,16 @@
 
 
 
-path="/scratch/cluster/teammco/CS388L_Proj"
-
-train_bulk="$path/Data/train_bulk.arff"
-train_std="$path/Data/train_std.arff"
-test_bulk="$path/Data/test_bulk.arff"
-test_std="$path/Data/test_std.arff"
+train_bulk="Data/train_bulk.arff"
+train_std="Data/train_std.arff"
+test_bulk="Data/test_bulk.arff"
+test_std="Data/test_std.arff"
 
 filter="weka.filters.unsupervised.attribute.StringToWordVector"
 stopwords="stopwords.txt"
 
-cp_weka="$path/weka-3-6-12/weka.jar"
-cp_proj="$path"
+cp_weka="weka-3-6-12/weka.jar"
+cp_proj="."
 
 # Optional flags:
 #   -C  labels include word counts, not just binary (is word there or not).

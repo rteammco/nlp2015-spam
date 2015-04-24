@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Estimate an N-gram kneser-ney language model from the raw text file.
+
+
+cp="berkeleylm-1.1.5/src"
+N=3
+data_file="Data/something"
+
+java -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N kneserNeyFromText.arpa $data_file
