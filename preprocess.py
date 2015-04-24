@@ -1,4 +1,5 @@
-# Python script to convert the raw email data into .arff format for Weka.
+# Python script to convert the raw email data into .arff format for Weka,
+# or outputs N-gram processing files from the raw email data.
 
 import sys
 import argparse
@@ -123,9 +124,10 @@ def output_arff_file(messages, fname):
 def output_ngram_files(messages, fname, to_chars, to_lower):
     """
     Writes the messages to two files: one for ham emails and another for spam
-    messages, depending on their paired labels. If parameter "chars" is true,
+    messages, depending on their paired labels. If parameter "chars" is True,
     the words are also going to be split up into space-delimited characters
-    before being written out to the output file.
+    before being written out to the output file. Similarly, if "to_lower" is
+    True, every word or character will be converted to lowercase first.
     """
     ham_messages = []
     spam_messages = []

@@ -4,8 +4,11 @@
                 a standardized bag of words model. Both training and testing
                 data sets must be generated simultaneously for the sets to be
                 standardized and thus work with Weka's classifiers.
-*_ngram.arff:   Full text corpa (filtered and lowercase) but with no stopwords
+*_ngram_*:      Full text corpa (filtered and lowercase) but with no stopwords
                 removed. The purpose of these files is to train NGram models.
+                The second "*" indicates one or more "_" delimited options:
+                    lower   = all lowercase words or characters,
+                    char    = characters instead of words
 
 Scrap:
 *_nostop.arff:  The old standardized files that have all the stopwords in them.
