@@ -140,21 +140,20 @@ def output_ngram_files(messages, fname, to_chars, to_lower):
         ham_messages = map(str.lower, ham_messages)
         spam_messages = map(str.lower, spam_messages)
     if to_chars:
-        temp = map(list, spam_messages)
-        spam_messages = []
-        for message in temp:
-            spam_messages.append([ch for ch in message if ch != ' '])
-        temp = map(list, ham_messages)
-        ham_messages = []
-        for message in temp:
-            ham_messages.append([ch for ch in message if ch != ' '])
-    print ham_messages
-    print spam_messages
-    return
-    outfile = open("ham_" + fname, 'w')
-    for message in ham_messages:
-        outfile.write(message)
-    outfile.close()
+        categories = []
+        for subset in [ham_messages, spam_messages]:
+            temp = map(list, subset)
+            category = []
+            for message in temp:
+                category.append(' '.join([ch for ch in message if ch != ' ']))
+            categories.append(category)
+        ham_messages = categories[0]
+        spam_messages = categories[1]
+    for category in [('ham', ham_messages), ('spam', spam_messages)]:
+        outfile = open(category[0] + "_" + fname, 'w')
+        for message in category[1]:
+            outfile.write(message + "\n")
+        outfile.close()
 
 
 def preprocess(args):
