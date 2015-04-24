@@ -1,6 +1,7 @@
 # Python script to convert the raw email data into .arff format for Weka.
 
 import sys
+import argparse
 import re
 import email
 
@@ -104,7 +105,7 @@ def process_message(mime_file):
     return dict((key, val) for key, val in message.items()), body
 
 
-def preprocess(data_dir, file_range, outfname):
+def preprocess(data_dir, file_range, outfname, to_ngrams):
     """
     Converts the data from each file in the given range into a single string
     of words extracted out of the message body. The words are pre-filtered
@@ -154,15 +155,23 @@ def load_stopwords(fname):
 
 # Process args and run the preprocessing code.
 if __name__ == '__main__':
-    if len(sys.argv) < 5:
-        print "Usage: <data_dir> <range_start> <range_end> <outfile> [stopword file]"
-        exit(0)
-    data_dir = sys.argv[1]
-    range_start = sys.argv[2]
-    range_end = sys.argv[3]
-    outfname = sys.argv[4]
-    if len(sys.argv) > 5:
-        stopwords_file = sys.argv[5]
-        load_stopwords(stopwords_file)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('data_dir', \
+                        help="Trec 2007 corpus directory.")
+    parser.add_argument('range_start', type=int, \
+                        help="First file in the data batch.")
+    parser.add_argument('range_end', type=int, \
+                        help="Last file in the data batch.")
+    parser.add_argument('outfile', \
+                        help="Output .arff file.")
+    parser.add_argument('-stopwords', '--swfile', required=False, \
+                        help="File of line-separated stopwords.")
+    parser.add_argument('--ngrams', dest='to_ngrams', action='store_true', \
+                        help="Set to true to output ngram format instead.")
+    args = parser.parse_args()
+    if args.swfile:
+        load_stopwords(args.swfile)
+    range_start = args.range_start
+    range_end = args.range_end
     file_range = (int(range_start), int(range_end))
-    preprocess(data_dir, file_range, outfname)
+    preprocess(args.data_dir, file_range, args.outfile, args.to_ngrams)
