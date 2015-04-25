@@ -3,6 +3,7 @@
 # Estimate an N-gram kneser-ney language model from the raw text files.
 
 
+java_path="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
 cp="berkeleylm-1.1.5/src"
 N=3
 
@@ -21,6 +22,6 @@ do
         in_file="Data/$model"
         out_file="Models/N_"$N"_$model.arpa"
         echo "Generating $out_file..."
-        java -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $out_file $in_file
+        $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $out_file $in_file
     done
 done
