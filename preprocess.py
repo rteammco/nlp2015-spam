@@ -154,17 +154,22 @@ def output_ngram_files(messages, fname, to_chars, to_lower):
         spam_messages = map(str.lower, spam_messages)
     if to_chars:
         categories = []
-        for subset in [ham_messages, spam_messages]:
-            temp = map(list, subset)
+        # Repeat for both categories: spam and ham messages.
+        for category in [ham_messages, spam_messages]:
+            messages_as_list_of_characters = map(list, category)
             category = []
-            for message in temp:
+            # Convert each message (a list of characters) to a space-delimited
+            # string of characters, dropping any extra spaces.
+            for message in messages_as_list_of_characters:
                 category.append(' '.join([ch for ch in message if ch != ' ']))
             categories.append(category)
         ham_messages = categories[0]
         spam_messages = categories[1]
     for category in [('ham', ham_messages), ('spam', spam_messages)]:
-        outfile = open(category[0] + "_" + fname, 'w')
-        for message in category[1]:
+        category_name = category[0]
+        category_messages = category[1]
+        outfile = open(category_name + "_" + fname, 'w')
+        for message in category_messages:
             outfile.write(message + "\n")
         outfile.close()
 
@@ -178,15 +183,12 @@ def preprocess(args):
     be further preprocessed and converted into a bag-of-words format using
     Weka's filter tools.
     """
-    range_start = args.range_start
-    range_end = args.range_end
-    file_range = (int(range_start), int(range_end))
     label_file = open(args.data_dir + '/full/index', 'r')
     labels = label_file.readlines()
     label_file.close()
     data_dir = args.data_dir + '/data'
     messages = []
-    for num in range(file_range[0], file_range[1]+1):
+    for num in range(int(args.range_start), int(args.range_end)+1):
         label = labels[num-1].split()[0]
         fname = data_dir + '/inmail.' + str(num)
         mime_file = open(fname, 'r')
