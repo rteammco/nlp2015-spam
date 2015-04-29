@@ -1,0 +1,23 @@
+universe = vanilla
+
+Initialdir   = /scratch/cluster/teammco/CS388L_Proj
+Executable   = /bin/bash
+Requirements = InMastodon
+
++Group   = "GRAD"
++Project = "INSTRUCTIONAL"
++ProjectDescription = "CS388L Final Project"
+
+Notification = complete
+Notify_user  = teammco@cs.utexas.edu
+
+
+Log = CondorLogs/do_everything.log
+
+Arguments = do_everything
+
+Output = CondorOutput/do_everything.out
+Error  = CondorOutput/do_everything.err
+
+
+Queue 1
