@@ -11,12 +11,13 @@
 
 # 3. Preprocess first 60000 emails for filtered training bag-of-words set.
 echo "Generating bulk training data."
-python preprocessor.py trec07 1 60000 Data/train_bulk.arff -stopwords stopwords.txt
+python preprocess.py trec07p 1 60000 Data/train_bulk.arff -stopwords stopwords.txt
 
 # 4. Preprocess last 15419emails for filtered testing bag-of-words set.
 echo "Generating bulk testing data."
-python preprocess.py trec07 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt
+python preprocess.py trec07p 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt
 
+exit
 # TODO - should we append n-gram and other features at step 3 and 4??
 
 # 5. Convert batch sets to standardized .arff files for Weka.
