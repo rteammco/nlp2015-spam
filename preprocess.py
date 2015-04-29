@@ -27,8 +27,9 @@ SYMBOLS = [
 def filter_words(words):
     """
     Removes all unwanted symbols from each word, and splits words around
-    unwanted delimiters. Also removes digits. After all filtering is done,
-    stopwords are also removed (assuming stopwords list is filled).
+    unwanted delimiters. Also removes digits and any excessive white space.
+    After all filtering is done, stopwords are also removed (assuming
+    stopwords list is filled). The result is returned as a list of words.
     NOTE: The words are NOT converted into lowercase in the final output.
     This is a word-by-word preprocessing step.
     """
@@ -52,9 +53,11 @@ def process_text(text):
     """
     Processes a single string of text and returns an untagged version of it.
     That is, removes any HTML tags, and any content contained inside the tags,
-    and returns the string as raw words.
+    and returns the string as raw words. Non-ascii characters will be replaced
+    with blank spaces.
     This is a character-by-character preprocessing step that also calls the
-    word-for-word preprocessing.
+    word-for-word preprocessing step after it finishes.
+    Returns a single space-delimited string of preprocessed words.
     """
     # remove HTML tags and non-ascii characters:
     words = text.split()
@@ -67,8 +70,11 @@ def process_text(text):
                 intag = True
             elif ch == '>':
                 intag = False
-            elif (not intag) and (ASCII_MIN <= ord(ch) <= ASCII_MAX):
-                untagged += ch
+            elif (not intag):
+                if (ASCII_MIN <= ord(ch) <= ASCII_MAX):
+                    untagged += ch
+                else:
+                    untagged += ' '
         if len(untagged) > 0:
             raw_words.append(untagged)
     # remove stopwords, numbers, and symbols:
@@ -78,7 +84,12 @@ def process_text(text):
 
 
 def process_multipart(part):
-    """Recursively processes a part of the message body content."""
+    """
+    Recursively processes a part of the message body content. If the current
+    part is a string or text, returns the string. If it is a chunk of another
+    multipart segment, it will recursively return all of the containing
+    email body text strings (concatenated into a single string).
+    """
     if type(part) is str:
         return part
     maintype = part.get_content_maintype()
@@ -87,7 +98,7 @@ def process_multipart(part):
     elif maintype == 'multipart':
         text = ''
         for sub_part in part.get_payload():
-            text += process_multipart(sub_part)
+            text += ' ' + process_multipart(sub_part)
         return text
     else:
         return ''
