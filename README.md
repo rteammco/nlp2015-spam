@@ -35,22 +35,28 @@ Experiment Steps
 
 Do all of the following from the base directory (where this README file is located).
 
-<ul>
+<ol>
   <li>Download and extract the tools and data set from the links below.</li>
   <li>Create a <code>Data</code> and a <code>Models</code> directory, if they do not exist.</li>
   <li>Use <b>preprocessor.py</b> to generate the filtered training set on the first 60000 emails:<br>
-    <code>python preprocessor.py trec07 1 60000 Data/train_bulk.arff -stopwords stopwords.txt</code></li>
+    <code>python preprocessor.py trec07 1 60000 Data/train_bulk.arff -stopwords stopwords.txt</code><br>
+    This can also be done using the Condor <code>CondorJobFiles/preprocess</code> submit file.</li>
   <li>Similarly, generate the filtered testing set on the remaining 15419 emails:<br>
-    <code>python preprocess.py trec07 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt</code></li>
+    <code>python preprocess.py trec07 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt</code><br>
+    This can also be done using the Condor <code>CondorJobFiles/preprocess_test</code> submit file.</li>
   <li>Run the <b>convert</b> script. This will automatically convert and standardize all the fdata files, assuming they were named correctly in the above steps:<br>
     <code>Data/train_bulk.arff -> Data/train_std.arff</code><br>
-    <code>Data/test_bulk.arff -> Data/test_std.arff</code></li>
-  <li>Run the <b>generate_ngram_files</b> script. This will call the preprocessor to generate all of the n-gram sets from the training data (first 60000 emails). The difference between this step and the previous steps is that stopwords will not be removed, and instead of .arff files, the output will be formatted for the Berkley LM n-gram program.</li>
-  <li>Run the <b>build_ngram_models</b> script. This will take all of the n-gram data sets and generate .arpa model files in the <code>Models</code> directory. You can modify this script to tweak the parameters of how the models are built.</li>
+    <code>Data/test_bulk.arff -> Data/test_std.arff</code><br>
+    This can also be done using the Condor <code>CondorJobFiles/convert</code> submit file (but change the Java 8 path).</li>
+  <li>Run the <b>generate_ngram_files</b> script. This will call the preprocessor to generate all of the n-gram sets from the training data (first 60000 emails). The difference between this step and the previous steps is that stopwords will not be removed, and instead of .arff files, the output will be formatted for the Berkley LM n-gram program.<br>
+    This can also be done using the Condor <code>CondorJobFiles/preprocess_ngrams</code> submit file.</li>
+  <li>Run the <b>build_ngram_models</b> script. This will take all of the n-gram data sets and generate .arpa model files in the <code>Models</code> directory. You can modify this script to tweak the parameters of how the models are built.<br>
+    This can also be done using the Condor <code>CondorJobFiles/build_ngram_models</code> submit file.<br>
+    NOTE: You will need to modify the Java 8 path in the <code>build_ngram_models</code> script.</li>
   <li>TODO: preprocess test data to n-gram format.</li>
   <li>TODO: evaluate each test email message on all of the spam and ham n-gram models.</li>
   <li>TODO: run the Weka classifiers.</li>
-</ul>
+</ol>
 
 
 Data and Tool Resources
