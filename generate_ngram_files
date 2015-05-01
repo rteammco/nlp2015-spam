@@ -13,48 +13,13 @@
 train_start=1
 train_end=60000
 test_start=60001
-#test_end=75419
-test_end=60010
+test_end=75419
 
 train_dir="Data/NGramTrain"
 test_dir="Data/NGramTest"
 cmd="python preprocess.py trec07p"
 
-# All the types of NGram models we will use:
-params=(
-    "--ngrams"
-    "--ngrams --ngram-lower"
-    "--ngrams --ngram-chars"
-    "--ngrams --ngram-lower --ngram-chars"
-)
-fnames=(
-    "upper_words"
-    "lower_words"
-    "upper_chars"
-    "lower_chars"
-)
-
-##
-## python preprocess.py trec07p 60001 60010 Data/NGramTest --ngrams --ngram-all
-##
-
-# Compile the preprocessed data files for all test and train instances:
-for ((i = 0; i < ${#params[@]}; i++))
-do
-    param=${params[$i]}
-    fname=${fnames[$i]}
-    echo "Parameter: $param ($fname)"
-
-    #echo "Generating for training data: $train_start - $train_end"
-    #train_fname="$train_dir/train_$fname"
-    #$cmd $train_start $train_end $train_fname $param
-
-    echo "Generating for testing data: $test_start - $test_end"
-    mkdir -p $test_dir/$fname
-    test_fname="$test_dir/$fname"
-    $cmd $test_start $test_end $test_fname $param --ngram-test
-
-    echo ""
-done
+echo $cmd $train_start $train_end $train_dir --ngrams --ngram-all
+echo $cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
 
 echo "All done. SUCCESS!"
