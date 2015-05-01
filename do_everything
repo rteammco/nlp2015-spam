@@ -17,7 +17,6 @@ python preprocess.py trec07p 1 60000 Data/train_bulk.arff -stopwords stopwords.t
 echo "Generating bulk testing data."
 python preprocess.py trec07p 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt
 
-exit
 # TODO - should we append n-gram and other features at step 3 and 4??
 
 # 5. Convert batch sets to standardized .arff files for Weka.
