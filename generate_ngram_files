@@ -8,16 +8,46 @@
 #   spam_ngram_upper_words
 #   ham_ngram_upper_words
 
-echo "Generating uppercase words file..."
-python preprocess.py trec07p 1 60000 Data/ngram_upper_words --ngrams
 
-echo "Generating lowercase words file..."
-python preprocess.py trec07p 1 60000 Data/ngram_lower_words --ngrams --ngram-lower
+# Training and testing data ranges
+train_start=1
+train_end=60000
+test_start=60001
+test_end=75419
 
-echo "Generating uppercase characters file..."
-python preprocess.py trec07p 1 60000 Data/ngram_upper_chars --ngrams --ngram-chars
+data_dir="Data/NGram"
+cmd="python preprocess.py trec07p"
 
-echo "Generating lowercase characters file..."
-python preprocess.py trec07p 1 60000 Data/ngram_lower_chars --ngrams --ngram-lower --ngram-chars
+# All the types of NGram models we will use:
+params=(
+    "--ngrams"
+    "--ngrams --ngram-lower"
+    "--ngrams --ngram-chars"
+    "--ngrams --ngram-lower --ngram-chars"
+)
+fnames=(
+    "upper_words"
+    "lower_words"
+    "upper_chars"
+    "lower_chars"
+)
+
+# Compile the preprocessed data files for all test and train instances:
+for ((i = 0; i < ${#params[@]}; i++))
+do
+    param=${params[$i]}
+    fname=${fnames[$i]}
+    echo "Parameter: $param ($fname)"
+
+    echo "Generating for training data: $train_start - $train_end"
+    train_fname="$data_dir/train_$fname"
+    $cmd $train_start $train_end $train_fname $param
+
+    echo "Generating for testing data: $test_start - $test_end"
+    test_fname="$data_dir/test_$fname"
+    $cmd $test_start $test_end $test_fname $param
+
+    echo ""
+done
 
 echo "All done. SUCCESS!"

@@ -169,7 +169,7 @@ def output_ngram_files(messages, fname, to_chars, to_lower):
         category_name = category[0]
         category_messages = category[1]
         fpath = fname.split('/')
-        fpath[-1] = category_name + '_' + fpath[-1]
+        fpath[-1] = fpath[-1] + '_' + category_name
         outfname = '/'.join(fpath)
         outfile = open(outfname, 'w')
         for message in category_messages:
