@@ -174,7 +174,10 @@ def output_ngram_files(messages, args):
     if args.ngram_test:
         counter = args.range_start
         for message in ham_messages:
-            outfname = args.outfile + '_' + str(counter)
+            slash = '/'
+            if args.outfile[-1] == '/':
+                slash = ''
+            outfname = args.outfile + slash + 'message_' + str(counter)
             outfile = open(outfname, 'w')
             outfile.write(message)
             outfile.close()
@@ -215,7 +218,22 @@ def preprocess(args):
         mime_file.close()
         messages.append((body, label))
     if args.to_ngrams:
-        output_ngram_files(messages, args)
+        if args.ngram_all:
+            options = [ # name, lowercase?, characters?
+                ('upper_words', False, False),
+                ('lower_words', True,  False),
+                ('upper_chars', False, True),
+                ('lower_chars', True,  True),
+            ]
+            outdir = args.outfile
+            for opt in options:
+                args.outfile = outdir + '/' + opt[0]
+                args.ngram_lower = opt[1]
+                args.ngram_chars = opt[2]
+                print opt
+                output_ngram_files(messages, args)
+        else:
+            output_ngram_files(messages, args)
     else:
         output_arff_file(messages, args)
 
@@ -253,6 +271,8 @@ if __name__ == '__main__':
                         help="Use N-Gram characters instead of words.")
     parser.add_argument('--ngram-lower', dest='ngram_lower', action='store_true', \
                         help="Use only lowercase N-Grams.")
+    parser.add_argument('--ngram-all', dest='ngram_all', action='store_true', \
+                        help="Generates all 4 combinations of NGram options.")
     parser.add_argument('--ngram-test', dest='ngram_test', action='store_true', \
                         help="NGram output is formatted for test data instead.")
     args = parser.parse_args()
