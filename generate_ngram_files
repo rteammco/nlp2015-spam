@@ -15,7 +15,7 @@ train_end=60000
 test_start=60001
 test_end=75419
 
-data_dir="Data/NGram"
+data_dir="Data/NGramTrain"
 cmd="python preprocess.py trec07p"
 
 # All the types of NGram models we will use:
@@ -43,9 +43,10 @@ do
     train_fname="$data_dir/train_$fname"
     $cmd $train_start $train_end $train_fname $param
 
-    echo "Generating for testing data: $test_start - $test_end"
-    test_fname="$data_dir/test_$fname"
-    $cmd $test_start $test_end $test_fname $param
+    # This doesn't make sense: we can't know if they're ham or spam!
+    #echo "Generating for testing data: $test_start - $test_end"
+    #test_fname="$data_dir/test_$fname"
+    #$cmd $test_start $test_end $test_fname $param
 
     echo ""
 done
