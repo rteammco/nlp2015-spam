@@ -168,7 +168,10 @@ def output_ngram_files(messages, fname, to_chars, to_lower):
     for category in [('ham', ham_messages), ('spam', spam_messages)]:
         category_name = category[0]
         category_messages = category[1]
-        outfile = open(category_name + "_" + fname, 'w')
+        fpath = fname.split('/')
+        fpath[-1] = category_name + '_' + fpath[-1]
+        outfname = '/'.join(fpath)
+        outfile = open(outfname, 'w')
         for message in category_messages:
             outfile.write(message + "\n")
         outfile.close()
