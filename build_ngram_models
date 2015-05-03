@@ -5,10 +5,20 @@
 
 java_path="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
 cp="berkeleylm-1.1.6/src"
-N=5
 
-#types=(upper_words lower_words upper_chars lower_chars)
-types=(upper_chars lower_chars)
+if [ -z "$1" ]; then
+    N=3;
+else
+    N=$1
+fi
+
+echo "Generating $N-Gram models..."
+
+
+types=(upper_words lower_words upper_chars lower_chars)
+#types=(upper_chars lower_chars)
+
+
 classes=(ham spam)
 for t in ${types[*]}
 do
