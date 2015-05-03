@@ -64,11 +64,12 @@ Data and Tool Resources
 
 This is a list of sources of data and tools.
 
-DATASET: trec07p
-http://plg.uwaterloo.ca/~gvcormac/treccorpus07/
+<b><u>DATASET</u>: trec07p</b> <br>
+http://plg.uwaterloo.ca/~gvcormac/treccorpus07/ <br>
 
-TOOL: Weka 3.6.12
-http://www.cs.waikato.ac.nz/ml/weka/downloading.html
+<b><u>TOOL</u>: Weka 3.6.12</b> <br>
+http://www.cs.waikato.ac.nz/ml/weka/downloading.html <br>
 
-TOOK: Berkley Language Model 1.1.5
-https://code.google.com/p/berkeleylm/
+<b><u>TOOL</u>: Berkley Language Model 1.1.6</b> <br>
+https://code.google.com/p/berkeleylm/ <br>
+Download: <code>svn checkout http://berkeleylm.googlecode.com/svn/trunk/ berkeleylm-1.1.6</code> <br>

@@ -4,15 +4,11 @@
 
 
 java_path="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
-cp="berkeleylm-1.1.5/src"
-N=3
+cp="berkeleylm-1.1.6/src"
+N=5
 
-#in_file="Data/ham_ngram_upper_words"
-#out_file="ham_ngram_upper_words.arpa"
-#java -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $out_file $in_file
-#exit
-
-types=(upper_words lower_words upper_chars lower_chars)
+#types=(upper_words lower_words upper_chars lower_chars)
+types=(upper_chars lower_chars)
 classes=(ham spam)
 for t in ${types[*]}
 do
@@ -24,7 +20,7 @@ do
         arpa_file="$out_file.arpa"
         bin_file="$out_file.binary"
         echo "Generating $out_file..."
-        #$java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $arpa_file $in_file
+        $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $arpa_file $in_file
         $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa $arpa_file $bin_file
     done
 done

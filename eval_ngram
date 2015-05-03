@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cmd="java -ea -mx1000m -server -cp berkeleylm-1.1.5/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
+cmd="java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
 
 msg=$1
 model=$2
