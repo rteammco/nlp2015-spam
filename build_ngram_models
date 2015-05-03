@@ -24,7 +24,7 @@ do
         arpa_file="$out_file.arpa"
         bin_file="$out_file.binary"
         echo "Generating $out_file..."
-        $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $arpa_file $in_file
-        $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa $apra_file $bin_file
+        #$java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $arpa_file $in_file
+        $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa $arpa_file $bin_file
     done
 done

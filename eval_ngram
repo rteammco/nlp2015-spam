@@ -2,9 +2,18 @@
 
 cmd="java -ea -mx1000m -server -cp berkeleylm-1.1.5/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
 
-#model="Models/N_3_ham_ngram_lower_chars.binary"
-#input="Data/NGramTest/lower_words/message_60001"
-model="Models/N_3_ham_ngram_lower_chars.binary"
-input="Data/NGramTest/lower_chars/message_$1"
+msg=$1
+model=$2
+class=$3
 
-$cmd $model $input
+if [ -z "${msg}" ] || [ -z "${model}" ] || [ -z "${class}" ] ; then
+    echo "Usage: \$ ./eval_ngram <message_number> <model> <class>"
+    echo "e.g.   \$ ./eval_ngram 60215 lower_words spam"
+    exit
+fi
+N="3"
+
+binary="Models/N_${N}_${model}_${class}.binary"
+input="Data/NGramTest/${model}/message_$1"
+
+$cmd $binary $input
