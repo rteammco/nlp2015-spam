@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cmd="java -ea -mx1000m -server -cp berkeleylm-1.1.5/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
+
+#model="Models/N_3_ham_ngram_lower_chars.binary"
+#input="Data/NGramTest/lower_words/message_60001"
+model="Models/N_3_ham_ngram_lower_chars.binary"
+input="Data/NGramTest/lower_chars/message_$1"
+
+$cmd $model $input

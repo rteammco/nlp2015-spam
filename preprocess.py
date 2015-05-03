@@ -191,6 +191,7 @@ def output_ngram_files(messages, args):
             fpath[-1] = fpath[-1] + '_' + category_name
             outfname = '/'.join(fpath)
             outfile = open(outfname, 'w')
+            outfile.write("\n") # a newline must be on top for BerkleyLM tool
             for message in category_messages:
                 outfile.write(message + "\n")
             outfile.close()

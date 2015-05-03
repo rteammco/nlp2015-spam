@@ -12,19 +12,19 @@ N=3
 #java -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $out_file $in_file
 #exit
 
-types=(ngram_upper_words ngram_lower_words ngram_upper_chars ngram_lower_chars)
+types=(upper_words lower_words upper_chars lower_chars)
 classes=(ham spam)
 for t in ${types[*]}
 do
     for class in ${classes[*]}
     do
-        model="$class"_"$t"
-        in_file="Data/$model"
+        model="$t"_"$class"
+        in_file="Data/NGramTrain/train_$model"
         out_file="Models/N_"$N"_$model"
         arpa_file="$out_file.arpa"
         bin_file="$out_file.binary"
         echo "Generating $out_file..."
         $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText $N $arpa_file $in_file
-       #$java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa $apra_file $bin_file
+        $java_path -ea -mx1000m -server -cp $cp edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa $apra_file $bin_file
     done
 done
