@@ -14,6 +14,6 @@ fi
 N="3"
 
 binary="Models/N_${N}_${model}_${class}.binary"
-input="Data/NGramTest/${model}/message_$1"
+input="Data/NGramTest/${model}/message_$msg"
 
 $cmd $binary $input

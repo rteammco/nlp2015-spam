@@ -263,7 +263,7 @@ if __name__ == '__main__':
     parser.add_argument('range_end', type=int, \
                         help="Last file in the data batch.")
     parser.add_argument('outfile', \
-                        help="Output .arff file.")
+                        help="Output .arff file or N-Gram file/directory.")
     parser.add_argument('-stopwords', '--swfile', required=False, \
                         help="File of line-separated stopwords.")
     parser.add_argument('--ngrams', dest='to_ngrams', action='store_true', \
