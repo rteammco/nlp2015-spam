@@ -9,6 +9,25 @@
 
 # Steps are enumerated according the REAMDE.md:
 
+# 1, 2. Download all the stuff (you have to do this manually).
+
+# 3. Make all of the necessary directories if they don't exist.
+mkdir -p Data/NGramTrain
+mkdir -p Data/NGramTest/lower_chars
+mkdir -p Data/NGramTest/lower_words
+mkdir -p Data/NGramTest/upper_chars
+mkdir -p Data/NGramTest/upper_words
+
+# 4. Generate all of the N-Gram data files.
+bash generate_ngram_models
+
+# 5. Build the N-Gram models using Berkley LM.
+bash build_ngram_models 3
+bash build_ngram_models 5 # TODO - parameter for chars only
+
+exit
+
+# TODO: finish this part up
 # 3. Preprocess first 60000 emails for filtered training bag-of-words set.
 echo "Generating bulk training data."
 python preprocess.py trec07p 1 60000 Data/train_bulk.arff -stopwords stopwords.txt
