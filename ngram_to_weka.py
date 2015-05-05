@@ -8,9 +8,8 @@
 #  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models lower_chars/lower_words out.txt 3 4 5
 #  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models all out.txt 3
 #
-# TODO - the script does not support mixing model types and N values. For
-# example, it should support lower_chars for N = 3, 4, 5, but lower_words
-# only for N = 3. Perhaps use a config file for this.
+# Or, using the config file (see documentation in that file):
+#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models config out.txt
 
 
 import argparse
@@ -129,6 +128,23 @@ def write_arff_file(args, outputs):
     outfile.close()
 
 
+def read_config_file(args):
+    """Sets up 'args' according to the config file 'ngram_to_weka.config'."""
+    config_file = open('ngram_to_weka.config', 'r')
+    lines = config_file.readlines()
+    config_file.close()
+    for line in lines:
+        line = line.strip()
+        if len(line) == 0 or line[0] == '#':
+            continue
+        model_type, n_vals = line.split(':')
+        n_vals = n_vals.split(',')
+        n_vals = map(str.strip, n_vals)
+        print model_type
+        print n_vals
+    args.N_vals = [] # TODO - remove (stopper for now)
+
+
 # Process args and run the evaluation code.
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -143,12 +159,21 @@ if __name__ == '__main__':
     parser.add_argument('model_dir', \
                         help="Directory of the binary model files.")
     parser.add_argument('model_type', \
-                        help="Which model to use (e.g. chars_upper).")
+                        help="Which model to use (e.g. chars_upper). " + \
+                             "Optionally, 'all' for all models, or 'config' " + \
+                             "to load config file for more advanced options.")
     parser.add_argument('outfile', \
                         help="Output .arff file or N-Gram file/directory.")
-    parser.add_argument('N_vals', type=int, nargs='+',
-                        help='A list of N values (N-Gram model types).')
+    parser.add_argument('N_vals', type=int, nargs='*',
+                        help="A list of N values (N-Gram model types). Need " + \
+                             "at least one unless using the 'config' option.")
     args = parser.parse_args()
+    if args.model_type == 'config':
+        read_config_file(args)
+    if len(args.N_vals) < 1:
+        print "Please provide at least one N value:\n"
+        parser.print_help()
+        exit(0)
     if not args.data_dir.endswith('/'):
         args.data_dir += '/'
     if not args.in_dir.endswith('/'):
