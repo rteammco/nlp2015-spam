@@ -2,7 +2,7 @@ NLP Spam Detection Project
 ======
 
 
-Experiment Steps
+Setup and Preprocessing Steps
 ------
 
 Do all of the following from the base directory (where this README file is located).
@@ -23,11 +23,20 @@ Do all of the following from the base directory (where this README file is locat
   <li>Run the <b>generate_ngram_files</b> script. This will call <code>preprocessor.py</code> appropriately to generate all of the n-gram sets from the training data (first 60000 emails) and create separate test files for each message in the test set (last 15419 emails). The files will be stored in the directories created above.<br>
     Four types of sets will be generated: lower_chars, lower_words, upper_chars, and upper_words. The "lower" data means all characters have been converted to lowercase, and "upper" means they have not been converted. The "words" data is to generate the N-Grams for words, whereas the "chars" data is for generating N-Grams on the individual characters in the message instead.<br>
     For both the training set and the test set, each message will be stored individually in its own file and will be <i>unlabeled</i> for evaluation usage. However, for the training set, all emails will additionally be stored in two other separate files - one containing all spam messages and the other containing all ham messages - for the Berkley LM classifier to learn a model from.<br>
-    This step can also be done using the Condor <code>CondorJobFiles/preprocess_ngrams</code> submit file.</li>
+    This step can also be done using the Condor <code>CondorJobFiles/preprocess_ngrams</code> submit file.<br>
+    <b>TODO:</b> At this time, the script uses <i>all</i> of the training data (emails 1 to 60000) to generate the model data. This can be modified by editing the script. To generate a separate evaluation set from a subset of the training data (i.e. to train a classifier on different data), run the test version of the commands. Note that you will have to modify all of the data paths.</li>
   <li>Run the <b>build_ngram_models</b> script. This will take all of the N-Gram data sets created from the previous step and generate .arpa and .binary model files in the <code>Models</code> directory. These files are used for evaluating test data against the N-Gram models.<br>
-    By default, N (for the <i>N</i>-Gram parameter) is set to 3. You can pass in a numerical argument to the script to change the value of N.<br>
+    By default, N (for the <i>N</i>-Gram parameter) is set to 3. You can pass in a numerical argument to the script to change the value of N. You may want to modify the code by setting the <code>types</code> list to only include model types that you want to generate.<br>
     This step can also be done using the Condor <code>CondorJobFiles/build_ngram_models</code> submit file. To change N when using Condor will require modifying the parameters in the submit file.<br>
     NOTE: You will need to modify the Java 8 path in the <code>build_ngram_models</code> script.</li>
+  <li>Now you should be ready to do experiments. See the sections below for information on how to run the different experiments.</li>
+</ol>
+
+
+Bag of Words Experiment
+------
+
+<ol>
   <li><b>TODO: the following steps need to be modified.</b></li>
   <li>Use <b>preprocessor.py</b> to generate the filtered training set on the first 60000 emails:<br>
     <code>python preprocessor.py trec07 1 60000 Data/train_bulk.arff -stopwords stopwords.txt</code><br>
@@ -42,6 +51,14 @@ Do all of the following from the base directory (where this README file is locat
   <li>TODO: preprocess test data to n-gram format.</li>
   <li>TODO: evaluate each test email message on all of the spam and ham n-gram models.</li>
   <li>TODO: run the Weka classifiers.</li>
+</ol>
+
+
+N-Gram Experiment
+------
+
+<ol>
+  <li><b>TODO</b></li>
 </ol>
 
 
