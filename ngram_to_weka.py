@@ -51,7 +51,7 @@ def join_outputs(outputs, new_outputs):
         return outputs
 
 
-def ngram_to_weka(args, model_type = None):
+def ngram_to_weka(args, models):
     """
     Evaluates each input message on both the spam and ham N-Gram models for
     each value of N provided. Returns a list of tuples, where each tuple
@@ -63,33 +63,37 @@ def ngram_to_weka(args, model_type = None):
     [(60001, 'ham', ['-2341.23', '-3245.32', '-3241.33', '-3421.32']),
      (60002, 'ham', ['-5241.64', '-2512.42', '-1325.78', '-3513.23'])]
     """
-    if model_type is None:
-        outputs = []
-        for model_type in args.model_type:
-            outputs = join_outputs(outputs, ngram_to_weka(args, model_type))
-        return outputs
-    in_dir = args.in_dir + model_type + '/'
+    # Read the labels file from the raw data set (ham or spam).
     label_file = open(args.data_dir + 'full/index', 'r')
     labels = label_file.readlines()
     label_file.close()
     labels = [label.split()[0] for label in labels]
+    # Process each model separately, with all of its prescribed N values.
     outputs = []
-    model_bin_ham = model_type + '_ham.binary'
-    model_bin_spam = model_type + '_spam.binary'
-    for num in range(args.range_start, args.range_end+1):
-        label = labels[num-1]
-        msg_file = in_dir + 'message_' + str(num)
-        probs = []
-        for n_val in args.N_vals:
-            n_prefix = 'N_' + str(n_val) + '_'
-            model_bin_ham_N = args.model_dir + n_prefix + model_bin_ham
-            model_bin_spam_N = args.model_dir + n_prefix + model_bin_spam
-            ham_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_ham_N + ' ' + msg_file)
-            ham_prob = extract_probability(ham_output)
-            spam_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_spam_N + ' ' + msg_file)
-            spam_prob = extract_probability(spam_output)
-            probs += [ham_prob, spam_prob]
-        outputs.append((num, label, probs))
+    for model in models:
+        cur_outputs = []
+        model_type = model[0]
+        n_vals = model[1]
+        in_dir = args.in_dir + model_type + '/'
+        model_bin_ham = model_type + '_ham.binary'
+        model_bin_spam = model_type + '_spam.binary'
+        # Process every message in the range.
+        for num in range(args.range_start, args.range_end+1):
+            label = labels[num-1]
+            msg_file = in_dir + 'message_' + str(num)
+            probs = []
+            # Process for each message all N-values for this model.
+            for n_val in n_vals:
+                n_prefix = 'N_' + str(n_val) + '_'
+                model_bin_ham_N = args.model_dir + n_prefix + model_bin_ham
+                model_bin_spam_N = args.model_dir + n_prefix + model_bin_spam
+                ham_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_ham_N + ' ' + msg_file)
+                ham_prob = extract_probability(ham_output)
+                spam_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_spam_N + ' ' + msg_file)
+                spam_prob = extract_probability(spam_output)
+                probs += [ham_prob, spam_prob]
+            cur_outputs.append((num, label, probs))
+        outputs = join_outputs(outputs, cur_outputs)
     return outputs
 
 
@@ -128,11 +132,15 @@ def write_arff_file(args, outputs):
     outfile.close()
 
 
-def read_config_file(args):
-    """Sets up 'args' according to the config file 'ngram_to_weka.config'."""
+def get_models_from_config(args):
+    """
+    Sets up model types (which models and N values to use) according to the
+    config file 'ngram_to_weka.config'.
+    """
     config_file = open('ngram_to_weka.config', 'r')
     lines = config_file.readlines()
     config_file.close()
+    models = []
     for line in lines:
         line = line.strip()
         if len(line) == 0 or line[0] == '#':
@@ -140,9 +148,29 @@ def read_config_file(args):
         model_type, n_vals = line.split(':')
         n_vals = n_vals.split(',')
         n_vals = map(str.strip, n_vals)
-        print model_type
-        print n_vals
-    args.N_vals = [] # TODO - remove (stopper for now)
+        if len(n_vals) == 0:
+            print "Error: malformed config file:"
+            print "  Each model must have at least one N value."
+            exit(0)
+        models.append((model_type, n_vals))
+    return models
+
+
+def get_models_from_args(args):
+    """
+    Sets up model types (which models and N values to use) according to the
+    args passed in to the program.
+    """
+    if args.model_type == 'all':
+        args.model_type = 'lower_chars/lower_words/upper_chars/upper_words'
+    args.model_type = args.model_type.split('/')
+    models = []
+    for model_type in args.model_type:
+        n_vals = []
+        for N in args.N_vals:
+            n_vals.append(N)
+        models.append((model_type, n_vals))
+    return models
 
 
 # Process args and run the evaluation code.
@@ -169,23 +197,21 @@ if __name__ == '__main__':
                              "at least one unless using the 'config' option.")
     args = parser.parse_args()
     if args.model_type == 'config':
-        read_config_file(args)
-    if len(args.N_vals) < 1:
-        print "Please provide at least one N value:\n"
-        parser.print_help()
-        exit(0)
+        models = get_models_from_config(args)
+    else:
+        models = get_models_from_args(args)
+        if len(args.N_vals) < 1:
+            print "Please provide at least one N value:\n"
+            parser.print_help()
+            exit(0)
     if not args.data_dir.endswith('/'):
         args.data_dir += '/'
     if not args.in_dir.endswith('/'):
         args.in_dir += '/'
     if not args.model_dir.endswith('/'):
         args.model_dir += '/'
-    if args.model_type == 'all':
-        args.model_type = 'lower_chars/lower_words/upper_chars/upper_words'
-    args.model_type = args.model_type.split('/')
-    outputs = ngram_to_weka(args)
-    #print "Output is of the following form:"
-    #print "   msg #, class, (for each model type: (for each N: (ham prob, spam prob)))"
-    #for output in outputs:
-    #    print output
-    write_arff_file(args, outputs)
+    outputs = ngram_to_weka(args, models)
+    print models
+    for output in outputs:
+        print output
+    #write_arff_file(args, outputs)
