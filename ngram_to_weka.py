@@ -30,7 +30,19 @@ def extract_probability(model_output):
     return model_output.strip().split()[-1]
 
 
-def ngram_to_weka(args):
+def join_outputs(outputs, new_outputs):
+    """Adds all features of the new_outputs to the existing outputs list."""
+    if len(outputs) == 0:
+        return new_outputs
+    else:
+        assert(len(outputs) == len(new_outputs))
+        for i in range(len(outputs)):
+            for feature in new_outputs[i][2]:
+                outputs[i][2].append(feature)
+        return outputs
+
+
+def ngram_to_weka(args, model_type = None):
     """
     Evaluates each input message on both the spam and ham N-Gram models for
     each value of N provided. Returns a list of tuples, where each tuple
@@ -42,13 +54,18 @@ def ngram_to_weka(args):
     [(60001, 'ham', ['-2341.23', '-3245.32', '-3241.33', '-3421.32']),
      (60002, 'ham', ['-5241.64', '-2512.42', '-1325.78', '-3513.23'])]
     """
+    if model_type is None:
+        outputs = []
+        for model_type in args.model_type:
+            outputs = join_outputs(outputs, ngram_to_weka(args, model_type))
+        return outputs
     label_file = open(args.data_dir + 'full/index', 'r')
     labels = label_file.readlines()
     label_file.close()
     labels = [label.split()[0] for label in labels]
     outputs = []
-    model_bin_ham = args.model_type + '_ham.binary'
-    model_bin_spam = args.model_type + '_spam.binary'
+    model_bin_ham = model_type + '_ham.binary'
+    model_bin_spam = model_type + '_spam.binary'
     for num in range(args.range_start, args.range_end+1):
         label = labels[num-1]
         msg_file = args.in_dir + 'message_' + str(num)
@@ -117,10 +134,11 @@ if __name__ == '__main__':
         args.in_dir += '/'
     if not args.model_dir.endswith('/'):
         args.model_dir += '/'
-    #if args.model_type == 'all':
-    #    args.model_type = 'lower_chars/lower_words/upper_chars/upper_words'
-    #args.model_type = args.model_type.split('/')
+    if args.model_type == 'all':
+        args.model_type = 'lower_chars/lower_words/upper_chars/upper_words'
+    args.model_type = args.model_type.split('/')
     outputs = ngram_to_weka(args)
-    print "Message # | label | ham prob | spam prob"
+    print "Output is of the following form:"
+    print "   msg #, class, (for each model type: (for each N: (ham prob, spam prob)))"
     for output in outputs:
         print output
