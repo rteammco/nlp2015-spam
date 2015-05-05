@@ -1,6 +1,16 @@
-# docs
-
-# python ngram_to_weka.py trec07p Data/NGramTest/lower_chars 60001 60003 Models lower_chars out.txt 3 5
+# Given N-Gram models and data, this script will run the Berkeley LM classifier
+# on the existing N-Gram model binaries and evaluate each message in the Data
+# directory provided. The output will be stored in a .arff training file for
+# the Weka classifier to train on.
+#
+# Some example use cases:
+#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models lower_chars out.txt 3 5
+#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models lower_chars/lower_words out.txt 3 4 5
+#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models all out.txt 3
+#
+# TODO - the script does not support mixing model types and N values. For
+# example, it should support lower_chars for N = 3, 4, 5, but lower_words
+# only for N = 3. Perhaps use a config file for this.
 
 
 import argparse
@@ -59,6 +69,7 @@ def ngram_to_weka(args, model_type = None):
         for model_type in args.model_type:
             outputs = join_outputs(outputs, ngram_to_weka(args, model_type))
         return outputs
+    in_dir = args.in_dir + model_type + '/'
     label_file = open(args.data_dir + 'full/index', 'r')
     labels = label_file.readlines()
     label_file.close()
@@ -68,7 +79,7 @@ def ngram_to_weka(args, model_type = None):
     model_bin_spam = model_type + '_spam.binary'
     for num in range(args.range_start, args.range_end+1):
         label = labels[num-1]
-        msg_file = args.in_dir + 'message_' + str(num)
+        msg_file = in_dir + 'message_' + str(num)
         probs = []
         for n_val in args.N_vals:
             n_prefix = 'N_' + str(n_val) + '_'
