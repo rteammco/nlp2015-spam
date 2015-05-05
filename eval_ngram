@@ -16,4 +16,5 @@ N="3"
 binary="Models/N_${N}_${model}_${class}.binary"
 input="Data/NGramTest/${model}/message_$msg"
 
+echo $cmd $binary $input
 $cmd $binary $input
