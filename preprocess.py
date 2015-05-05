@@ -134,15 +134,19 @@ def output_arff_file(messages, args):
 
 def output_ngram_files(messages, args):
     """
-    Writes the messages to two files: one for ham emails and another for spam
-    messages, depending on their paired labels. If parameter "args.ngram_chars"
-    is True, the words are also going to be split up into space-delimited
-    characters before being written out to the output file. Similarly, if
-    "args.ngram_lower" is True, every word or character will be converted to
-    lowercase first. If "args.ngram_test" is True, the output will be a LIST
-    of files (in order) for each message, and the messages won't be separated
-    between ham and spam.
+    For both training and testing data, the output will be a LIST of files
+    (output and named in order numerically by the range values) for each
+    message, and there will not be a label on those files. However, for
+    training data only (i.e. if "args.ngram_test" is False), the output will
+    also generate two additional files: one for ham emails and another for
+    spam messages, depending on their paired labels.
+    If parameter "args.ngram_chars" is True, the words are also going to be
+    split up into space-delimited characters before being written out to the
+    output file. Similarly, if "args.ngram_lower" is True, every word or
+    character will be converted to lowercase first.
     """
+    # TODO - this needs to be rewritten: we're doing the work twice now
+    all_messages = []
     ham_messages = []
     spam_messages = []
     # If this is for test data, put all messages into the ham pile. The spam
@@ -150,17 +154,20 @@ def output_ngram_files(messages, args):
     for pair in messages:
         message = pair[0]
         label = pair[1]
-        if args.ngram_test or label == 'ham':
-            ham_messages.append(message)
-        else:
-            spam_messages.append(message)
+        all_messages.append(message)
+        if not args.ngram_test:
+            if label == 'ham':
+                ham_messages.append(message)
+            else:
+                spam_messages.append(message)
     if args.ngram_lower:
+        all_messages = map(str.lower, all_messages)
         ham_messages = map(str.lower, ham_messages)
         spam_messages = map(str.lower, spam_messages)
     if args.ngram_chars:
         categories = []
         # Repeat for both categories: spam and ham messages.
-        for category in [ham_messages, spam_messages]:
+        for category in [all_messages, ham_messages, spam_messages]:
             messages_as_list_of_characters = map(list, category)
             category = []
             # Convert each message (a list of characters) to a space-delimited
@@ -168,22 +175,21 @@ def output_ngram_files(messages, args):
             for message in messages_as_list_of_characters:
                 category.append(' '.join([ch for ch in message if ch != ' ']))
             categories.append(category)
-        ham_messages = categories[0]
-        spam_messages = categories[1]
-    # For test messages, write each one to a unique file.
-    if args.ngram_test:
-        counter = args.range_start
-        for message in ham_messages:
-            slash = '/'
-            if args.outfile[-1] == '/':
-                slash = ''
-            outfname = args.outfile + slash + 'message_' + str(counter)
-            outfile = open(outfname, 'w')
-            outfile.write(message)
-            outfile.close()
-            counter += 1
-    # Otherwise, write two files, one for all hams and one for all all spams:
-    else:
+        all_messages = categories[0]
+        ham_messages = categories[1]
+        spam_messages = categories[2]
+    counter = args.range_start
+    for message in all_messages:
+        slash = '/'
+        if args.outfile[-1] == '/':
+            slash = ''
+        outfname = args.outfile + slash + 'message_' + str(counter)
+        outfile = open(outfname, 'w')
+        outfile.write(message)
+        outfile.close()
+        counter += 1
+    # For training, write two files, one for all hams and one for all all spams:
+    if not args.ngram_test:
         for category in [('ham', ham_messages), ('spam', spam_messages)]:
             category_name = category[0]
             category_messages = category[1]

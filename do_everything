@@ -17,6 +17,10 @@ mkdir -p Data/NGramTest/lower_chars
 mkdir -p Data/NGramTest/lower_words
 mkdir -p Data/NGramTest/upper_chars
 mkdir -p Data/NGramTest/upper_words
+mkdir -p Data/NGramTrain/lower_chars
+mkdir -p Data/NGramTrain/lower_words
+mkdir -p Data/NGramTrain/upper_chars
+mkdir -p Data/NGramTrain/upper_words
 
 # 4. Generate all of the N-Gram data files.
 bash generate_ngram_models
