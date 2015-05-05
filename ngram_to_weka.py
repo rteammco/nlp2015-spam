@@ -39,8 +39,8 @@ def ngram_to_weka(args):
     for that particular model, followed by the ham and spam log probabilities,
     respectively.
     e.g.
-    [(60001, 'ham', [(3, '-2341.23', '-3245.32'), (5, '-3241.33', '-3421.32']),
-     (60002, 'ham', [(3, '-5241.64', '-2512.42'), (5, '-1325.78', '3513.23')])]
+    [(60001, 'ham', ['-2341.23', '-3245.32', '-3241.33', '-3421.32']),
+     (60002, 'ham', ['-5241.64', '-2512.42', '-1325.78', '-3513.23'])]
     """
     label_file = open(args.data_dir + 'full/index', 'r')
     labels = label_file.readlines()
@@ -61,9 +61,34 @@ def ngram_to_weka(args):
             ham_prob = extract_probability(ham_output)
             spam_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_spam_N + ' ' + msg_file)
             spam_prob = extract_probability(spam_output)
-            probs.append((n_val, ham_prob, spam_prob))
+            probs += [ham_prob, spam_prob]
         outputs.append((num, label, probs))
     return outputs
+
+
+def add_feature(outputs, values):
+    """Adds the given list of features at the end of each output."""
+    assert(len(outputs) == len(values))
+    for val in values:
+        outputs[2].append(val)
+
+
+def write_arff_file(outfname, outputs):
+    """
+    Writes the .arff weka file using the given output values. The outputs
+    should be formatted the same way as the return format of the
+    "ngram_to_weka" function. Additional values may be inserted as tuples
+    using the "add_feature" function. Added features should not be regular
+    strings, and if they are, they must be *in quotes* and *escaped*.
+    """
+    outfile = open(outfname, 'w')
+    for output in outputs:
+        msg_class = output[1]
+        features = output[2]
+        for feature in features:
+            outfile.write(feature + ' ')
+        outfile.write(msg_class + '\n')
+    outfile.close()
 
 
 # Process args and run the evaluation code.
@@ -92,6 +117,9 @@ if __name__ == '__main__':
         args.in_dir += '/'
     if not args.model_dir.endswith('/'):
         args.model_dir += '/'
+    #if args.model_type == 'all':
+    #    args.model_type = 'lower_chars/lower_words/upper_chars/upper_words'
+    #args.model_type = args.model_type.split('/')
     outputs = ngram_to_weka(args)
     print "Message # | label | ham prob | spam prob"
     for output in outputs:
