@@ -16,9 +16,10 @@ import argparse
 import subprocess
 
 
+JAVA_EXE = '/u/teammco/Documents/Java/jdk1.8.0_40/bin/java'
 JAVA_CP  = 'berkeleylm-1.1.6/src'
 LM_CLASS = 'edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream'
-JAVA_CMD = 'java -ea -mx1000m -server -cp ' + JAVA_CP + ' ' + LM_CLASS
+JAVA_CMD = JAVA_EXE + ' -ea -mx1000m -server -cp ' + JAVA_CP + ' ' + LM_CLASS
 
 
 def run_bash_cmd(command):
@@ -71,6 +72,7 @@ def ngram_to_weka(args, models):
     # Process each model separately, with all of its prescribed N values.
     outputs = []
     for model in models:
+        print "Evaluating on model: " + str(model)
         cur_outputs = []
         model_type = model[0]
         n_vals = model[1]
@@ -78,7 +80,14 @@ def ngram_to_weka(args, models):
         model_bin_ham = model_type + '_ham.binary'
         model_bin_spam = model_type + '_spam.binary'
         # Process every message in the range.
+        count = 0
+        total = float((args.range_end + 1) - args.range_start)
+        one_percent_msgs = int(total / 100)
         for num in range(args.range_start, args.range_end+1):
+            count += 1
+            if count % one_percent_msgs == 0:
+                percent_done = int(100 * (float(count) / total))
+                print "    " + str(percent_done) + "% done..."
             label = labels[num-1]
             msg_file = in_dir + 'message_' + str(num)
             probs = []
