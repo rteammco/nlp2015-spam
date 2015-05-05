@@ -19,7 +19,7 @@ train_dir="Data/NGramTrain"
 test_dir="Data/NGramTest"
 cmd="python preprocess.py trec07p"
 
-$cmd $train_start $train_end $train_dir --ngrams --ngram-all --ngram-test # TODO - remove the --ngram-test after done
-#$cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
+$cmd $train_start $train_end $train_dir --ngrams --ngram-all
+$cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
 
 echo "All done. SUCCESS!"
