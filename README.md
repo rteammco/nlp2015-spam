@@ -12,12 +12,15 @@ Do all of the following from the base directory (where this README file is locat
   <li>Download and build Weka and the Berkley Language Model 1.1.6 from the links below. Keep the builds in the project directory, or otherwise edit all of the classpaths in the project scripts.</li>
   <li>Create the following directories if they do not exist:
     <ol>
-      <li><code>mkdir -p Data/NGramTrain</code></li>
+      <li><code>mkdir -p Data/NGramTrain/lower_chars</code></li>
+      <li><code>mkdir -p Data/NGramTrain/lower_words</code></li>
+      <li><code>mkdir -p Data/NGramTrain/upper_chars</code></li>
+      <li><code>mkdir -p Data/NGramTrain/upper_words</code></li>
       <li><code>mkdir -p Data/NGramTest/lower_chars</code></li>
       <li><code>mkdir -p Data/NGramTest/lower_words</code></li>
       <li><code>mkdir -p Data/NGramTest/upper_chars</code></li>
       <li><code>mkdir -p Data/NGramTest/upper_words</code></li>
-      <li><code>mkdir -p Models</code></li>
+      <li><code>mkdir -p Models/Evaluations</code></li>
     </ol>
   </li>
   <li>Now you are ready to start the preprocessing and experiment steps below.</li>

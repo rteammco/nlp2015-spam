@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Evaluates all messages, training and testing, for a single model, and puts
+# the scores into a single output file to be processed later by other
+# preprocessing scripts.
+
+
+JAVA_EXE="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
+CMD="$JAVA_EXE -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
+
+
+train_start=1
+train_end=60000
+test_start=60001
+test_end=75419
+
+N=$1
+model=$2
+class=$3
+
+if [ -z "${N}" ] || [ -z "${model}" ] || [ -z "${class}" ] ; then
+    echo "Usage: \$ ./eval_ngram <N> <model> <class>"
+    echo "e.g.   \$ ./eval_ngram 3 lower_words spam"
+    exit
+fi
+
+train_path="Data/NGramTrain/${model}"
+test_path="Data/NGramTest/${model}"
+
+full_model="N_${N}_${model}_${class}"
+binary="Models/${full_model}.binary"
+
+outfile="Models/Evaluations/$full_model"
+
+rm -f $outfile
+
+for msg in $(seq $train_start $train_end); do
+    $CMD $binary $train_path/message_$msg 2> /dev/null 1>> $outfile;
+done
+
+for msg in $(seq $test_start $test_end); do
+    $CMD $binary $test_path/message_$msg 2> /dev/null 1>> $outfile;
+done

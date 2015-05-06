@@ -1,0 +1,23 @@
+universe = vanilla
+
+Initialdir   = /scratch/cluster/teammco/CS388L_Proj
+Executable   = /bin/bash
+Requirements = InMastodon
+
++Group   = "GRAD"
++Project = "INSTRUCTIONAL"
++ProjectDescription = "CS388L Final Project"
+
+Notification = complete
+Notify_user  = teammco@cs.utexas.edu
+
+
+Log = CondorLogs/eval_all_N_4_lower_chars_ham.log
+
+Arguments = eval_all_ngrams 4 lower_chars ham
+
+Output = CondorOutput/eval_all_N_4_lower_chars_ham.out
+Error  = CondorOutput/eval_all_N_4_lower_chars_ham.err
+
+
+Queue 1
