@@ -2,55 +2,61 @@
 
 # A script that calls all of the other scripts in order to do the all of
 # the preprocessing and model generation steps.
+#!/bin/bash
 #
 # Make sure all of the individual scripts work before using this one.
+#
+# Steps are enumerated according the REAMDE.md.
 
 
+setup() {
+    # 1, 2. Download all the stuff (you have to do this manually).
 
-# Steps are enumerated according the REAMDE.md:
+    # 3. Make all of the necessary directories if they don't exist.
+    mkdir -p Data/NGramTrain
+    mkdir -p Data/NGramTest/lower_chars
+    mkdir -p Data/NGramTest/lower_words
+    mkdir -p Data/NGramTest/upper_chars
+    mkdir -p Data/NGramTest/upper_words
+    mkdir -p Data/NGramTrain/lower_chars
+    mkdir -p Data/NGramTrain/lower_words
+    mkdir -p Data/NGramTrain/upper_chars
+    mkdir -p Data/NGramTrain/upper_words
+    mkdir -p Models/Evaluations
+}
 
-# 1, 2. Download all the stuff (you have to do this manually).
 
-# 3. Make all of the necessary directories if they don't exist.
-mkdir -p Data/NGramTrain
-mkdir -p Data/NGramTest/lower_chars
-mkdir -p Data/NGramTest/lower_words
-mkdir -p Data/NGramTest/upper_chars
-mkdir -p Data/NGramTest/upper_words
-mkdir -p Data/NGramTrain/lower_chars
-mkdir -p Data/NGramTrain/lower_words
-mkdir -p Data/NGramTrain/upper_chars
-mkdir -p Data/NGramTrain/upper_words
-mkdir -p Models/Evaluations
+bag_of_words_preprocess() {
+    # 1. Preprocess first 60000 emails for filtered training bag-of-words set.
+    echo "Generating bulk training data."
+    python preprocess.py trec07p 1 60000 Data/train_bulk.arff -stopwords stopwords.txt
 
-# 4. Generate all of the N-Gram data files.
-bash generate_ngram_models
+    # 2. Preprocess last 15419emails for filtered testing bag-of-words set.
+    echo "Generating bulk testing data."
+    python preprocess.py trec07p 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt
+    
+    # 3. Convert batch sets to standardized .arff files for Weka.
+    echo "Converting bulk data to standardized data."
+    bash convert
 
-# 5. Build the N-Gram models using Berkley LM.
-bash build_ngram_models 3
-bash build_ngram_models 5 # TODO - parameter for chars only
+    # TODO - more stuff
+}
 
-exit
 
-# TODO: finish this part up
-# 3. Preprocess first 60000 emails for filtered training bag-of-words set.
-echo "Generating bulk training data."
-python preprocess.py trec07p 1 60000 Data/train_bulk.arff -stopwords stopwords.txt
+ngram_preprocess() {
+    # 1. Generate all of the N-Gram data files.
+    echo "Generating all N-Gram data files."
+    bash generate_ngram_models
+    
+    # 2. Build the N-Gram models using Berkley LM.
+    echo "Training (building) the N-Gram models."
+    bash build_ngram_models 3
+    bash build_ngram_models 4 lower_chars upper_chars
+    bash build_ngram_models 5 lower_chars upper_chars
 
-# 4. Preprocess last 15419emails for filtered testing bag-of-words set.
-echo "Generating bulk testing data."
-python preprocess.py trec07p 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt
+    # 3. Evaluate all messages on all appropriate models: TODO (also update readme)
 
-# TODO - should we append n-gram and other features at step 3 and 4??
+    # 4. Build arff from evaluated values: TODO (also update readme)
 
-# 5. Convert batch sets to standardized .arff files for Weka.
-echo "Converting bulk data to standardized data."
-./convert
-
-# 6. Generate the n-gram preprocessed data files.
-echo "Generating n-gram training data files."
-./generate_ngram_files
-
-# 7. Build the n-gram models using the Berkley LM tool.
-echo "Generating n-gram models."
-./build_ngram_models
+    # TODO - more stuff
+}

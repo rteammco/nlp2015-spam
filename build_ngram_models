@@ -1,10 +1,17 @@
 #!/bin/bash
 
 # Estimate an N-gram kneser-ney language model from the raw text files.
+#
+# Usage:
+# $ ./build_ngram_models [N] [list of model types...]
+#
+# Example:
+# $ ./build_ngram_models 4 lower_chars upper_chars
 
 
 java_path="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
 cp="berkeleylm-1.1.6/src"
+
 
 if [ -z "$1" ]; then
     N=3;
@@ -12,11 +19,16 @@ else
     N=$1
 fi
 
-echo "Generating $N-Gram models..."
+
+if [ -z "$2" ]; then
+    types=(upper_words lower_words upper_chars lower_chars)
+else
+    tmp=($@)
+    types=(${tmp[@]:1})
+fi
 
 
-#types=(upper_words lower_words upper_chars lower_chars)
-types=(upper_chars lower_chars)
+echo "Generating $N-Gram models for ${types[*]}..."
 
 
 classes=(ham spam)
