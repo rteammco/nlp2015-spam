@@ -4,40 +4,16 @@
 # the Weka classifier to train on.
 #
 # Some example use cases:
-#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models lower_chars out.txt 3 5
-#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models lower_chars/lower_words out.txt 3 4 5
-#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models all out.txt 3
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 60001 60003 lower_chars out.txt 3 5
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 60001 60003 lower_chars/lower_words out.txt 3 4 5
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 60001 60003 all out.txt 3
 #
 # Or, using the config file (see documentation in that file):
-#  $ python ngram_to_weka.py trec07p Data/NGramTest 60001 60003 Models config out.txt
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 60001 60003 Models config out.txt
 
 
 import argparse
 import subprocess
-
-
-JAVA_EXE = '/u/teammco/Documents/Java/jdk1.8.0_40/bin/java'
-JAVA_CP  = 'berkeleylm-1.1.6/src'
-LM_CLASS = 'edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream'
-JAVA_CMD = JAVA_EXE + ' -ea -mx1000m -server -cp ' + JAVA_CP + ' ' + LM_CLASS
-
-
-def run_bash_cmd(command):
-    """Executes a bash command and returns its output as a string."""
-    p = subprocess.Popen(command.split(), \
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    if len(out.strip()) == 0:
-        print "Output failed on command:"
-        print command
-        print "Error was: " + err
-        exit(0)
-    return out
-
-
-def extract_probability(model_output):
-    """Returns the probability extracted from the Berkley LM output text."""
-    return model_output.strip().split()[-1]
 
 
 def join_outputs(outputs, new_outputs):
@@ -54,52 +30,47 @@ def join_outputs(outputs, new_outputs):
 
 def ngram_to_weka(args, models):
     """
-    Evaluates each input message on both the spam and ham N-Gram models for
-    each value of N provided. Returns a list of tuples, where each tuple
-    contains the message number, the message label (spam or ham), and a list
-    of inner tuples for each N-Gram. Each inner tuple contains the value of N
-    for that particular model, followed by the ham and spam log probabilities,
-    respectively.
+    Returns a list of tuples, where each tuple contains the message number,
+    the message label (spam or ham), and a list of inner tuples for each
+    N-Gram. Each inner tuple contains the value of N for that particular
+    model, followed by the ham and spam log probabilities, respectively.
     e.g.
     [(60001, 'ham', ['-2341.23', '-3245.32', '-3241.33', '-3421.32']),
      (60002, 'ham', ['-5241.64', '-2512.42', '-1325.78', '-3513.23'])]
+    Uses existing evaluation files to get the actual log probabilities.
     """
     # Read the labels file from the raw data set (ham or spam).
     label_file = open(args.data_dir + 'full/index', 'r')
     labels = label_file.readlines()
     label_file.close()
     labels = [label.split()[0] for label in labels]
-    # Process each model separately, with all of its prescribed N values.
+    # Process each model separately, with all of its requested N values.
     outputs = []
     for model in models:
         print "Evaluating on model: " + str(model)
-        cur_outputs = []
         model_type = model[0]
         n_vals = model[1]
-        in_dir = args.in_dir + model_type + '/'
-        model_bin_ham = model_type + '_ham.binary'
-        model_bin_spam = model_type + '_spam.binary'
+        # Get the values for each message all N-values for this model.
+        values = []
+        for n_val in n_vals:
+            model_name = 'N_' + str(n_val) + '_' + model_type
+            ham_eval_fpath = args.in_dir + model_name + '_ham'
+            spam_eval_fpath = args.in_dir + model_name + '_spam'
+            ham_eval_file = open(ham_eval_fpath, 'r')
+            ham_vals = ham_eval_file.readlines()
+            ham_eval_file.close()
+            spam_eval_file = open(spam_eval_fpath, 'r')
+            spam_vals = spam_eval_file.readlines()
+            spam_eval_file.close()
+            values.append((ham_vals, spam_vals))
         # Process every message in the range.
-        count = 0
-        total = float((args.range_end + 1) - args.range_start)
-        one_percent_msgs = int(total / 100)
+        cur_outputs = []
         for num in range(args.range_start, args.range_end+1):
-            count += 1
-            if count % one_percent_msgs == 0:
-                percent_done = int(100 * (float(count) / total))
-                print "    " + str(percent_done) + "% done..."
             label = labels[num-1]
-            msg_file = in_dir + 'message_' + str(num)
             probs = []
-            # Process for each message all N-values for this model.
-            for n_val in n_vals:
-                n_prefix = 'N_' + str(n_val) + '_'
-                model_bin_ham_N = args.model_dir + n_prefix + model_bin_ham
-                model_bin_spam_N = args.model_dir + n_prefix + model_bin_spam
-                ham_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_ham_N + ' ' + msg_file)
-                ham_prob = extract_probability(ham_output)
-                spam_output = run_bash_cmd(JAVA_CMD + ' ' + model_bin_spam_N + ' ' + msg_file)
-                spam_prob = extract_probability(spam_output)
+            for pair in values:
+                ham_prob = pair[0][num-1].strip()
+                spam_prob = pair[1][num-1].strip()
                 probs += [ham_prob, spam_prob]
             cur_outputs.append((num, label, probs))
         outputs = join_outputs(outputs, cur_outputs)
@@ -190,13 +161,11 @@ if __name__ == '__main__':
     parser.add_argument('data_dir', \
                         help="Trec 2007 corpus directory.")
     parser.add_argument('in_dir', \
-                        help="Directory of the input N-Gram files.")
+                        help="Directory of the evaluated N-Grams.")
     parser.add_argument('range_start', type=int, \
                         help="First file in the data batch.")
     parser.add_argument('range_end', type=int, \
                         help="Last file in the data batch.")
-    parser.add_argument('model_dir', \
-                        help="Directory of the binary model files.")
     parser.add_argument('model_type', \
                         help="Which model to use (e.g. chars_upper). " + \
                              "Optionally, 'all' for all models, or 'config' " + \
