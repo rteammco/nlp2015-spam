@@ -13,12 +13,12 @@ Notification = complete
 Notify_user  = teammco@cs.utexas.edu
 
 
-Log = CondorLogs/preprocess_ngrams.log
+Log = CondorLogs/preprocess_ngrams3.log
 
 Arguments = generate_ngram_files 3
 
-Output = CondorOutput/preprocess_ngrams.out
-Error  = CondorOutput/preprocess_ngrams.err
+Output = CondorOutput/preprocess_ngrams3.out
+Error  = CondorOutput/preprocess_ngrams3.err
 
 
 Queue 1
