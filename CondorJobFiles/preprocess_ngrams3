@@ -1,0 +1,24 @@
+universe = vanilla
+
+Environment  = CLASSPATH=/scratch/cluster/teammco/CS388L_Proj/weka-3-6-12/weka.jar:/scratch/cluster/teammco/CS388L_Proj
+Initialdir   = /scratch/cluster/teammco/CS388L_Proj
+Executable   = /bin/bash
+Requirements = InMastodon
+
++Group   = "GRAD"
++Project = "INSTRUCTIONAL"
++ProjectDescription = "CS388L Final Project"
+
+Notification = complete
+Notify_user  = teammco@cs.utexas.edu
+
+
+Log = CondorLogs/preprocess_ngrams.log
+
+Arguments = generate_ngram_files 3
+
+Output = CondorOutput/preprocess_ngrams.out
+Error  = CondorOutput/preprocess_ngrams.err
+
+
+Queue 1

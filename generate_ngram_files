@@ -41,9 +41,15 @@ mkdir -p $test_dir/upper_words
 
 
 # Run the preprocessor on all of the data
-$cmd $ng_train_start $ng_train_end $train_dir --ngrams --ngram-all
-$cmd $ng_eval_start $ng_eval_end $train_dir --ngrams --ngram-all --ngram-test
-$cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
+if [ -z "${1}" ] || [ "$1" -eq "1" ]; then
+    $cmd $ng_train_start $ng_train_end $train_dir --ngrams --ngram-all
+fi
+if [ -z "${1}" ] || [ "$1" -eq "2" ]; then
+    $cmd $ng_eval_start $ng_eval_end $train_dir --ngrams --ngram-all --ngram-test
+fi
+if [ -z "${1}" ] || [ "$1" -eq "3" ]; then
+    $cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
+fi
 
 
 echo "All done. SUCCESS!"
