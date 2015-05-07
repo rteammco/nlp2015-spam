@@ -22,8 +22,8 @@ test_data="Data/test_std.arff"
 
 
 #classifier="weka.classifiers.rules.ZeroR"
-#classifier"weka.classifiers.bayes.NaiveBayes"
-classifier="weka.classifiers.functions.SMO"
+classifier="weka.classifiers.bayes.NaiveBayes"
+#classifier="weka.classifiers.functions.SMO"
 
 
-java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data
+java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data -p 0

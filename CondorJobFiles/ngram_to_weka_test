@@ -14,7 +14,7 @@ Notify_user  = teammco@cs.utexas.edu
 
 Log = CondorLogs/ngram_to_weka_test.log
 
-Arguments = ngram_to_weka.py trec07p Data/NGramTest 60001 75419 Models/ config Data/test_ngram.arff
+Arguments = ngram_to_weka.py trec07p Data/NGramTest 67878 75419 Models/ config Data/test_ngram.arff
 
 Output = CondorOutput/ngram_to_weka_test.out
 Error  = CondorOutput/ngram_to_weka_test.err

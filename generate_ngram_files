@@ -9,17 +9,41 @@
 #   ham_ngram_upper_words
 
 
-# Training and testing data ranges
-train_start=1
-train_end=60000
-test_start=60001
+# Training and testing data ranges:
+
+# first 81% of data
+ng_train_start=1
+ng_train_end=61089
+
+# next 9% of data
+ng_eval_start=61090
+ng_eval_end=67877
+
+# last 10% of data
+test_start=67878
 test_end=75419
+
 
 train_dir="Data/NGramTrain"
 test_dir="Data/NGramTest"
 cmd="python preprocess.py trec07p"
 
-$cmd $train_start $train_end $train_dir --ngrams --ngram-all
+
+# Make all necessary directories if they don't already exist
+mkdir -p $train_dir/lower_chars
+mkdir -p $train_dir/lower_words
+mkdir -p $train_dir/upper_chars
+mkdir -p $train_dir/upper_words
+mkdir -p $test_dir/lower_chars
+mkdir -p $test_dir/lower_words
+mkdir -p $test_dir/upper_chars
+mkdir -p $test_dir/upper_words
+
+
+# Run the preprocessor on all of the data
+$cmd $ng_train_start $ng_train_end $train_dir --ngrams --ngram-all
+$cmd $ng_eval_start $ng_eval_end $train_dir --ngrams --ngram-all --ngram-test
 $cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
+
 
 echo "All done. SUCCESS!"

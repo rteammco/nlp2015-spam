@@ -27,13 +27,13 @@ setup() {
 
 
 bag_of_words_preprocess() {
-    # 1. Preprocess first 60000 emails for filtered training bag-of-words set.
+    # 1. Preprocess first 67877 (90%) emails for filtered training bag-of-words set.
     echo "Generating bulk training data."
-    python preprocess.py trec07p 1 60000 Data/train_bulk.arff -stopwords stopwords.txt
+    python preprocess.py trec07p 1 67877 Data/train_bulk.arff -stopwords stopwords.txt
 
-    # 2. Preprocess last 15419emails for filtered testing bag-of-words set.
+    # 2. Preprocess last 7542 (10%) emails for filtered testing bag-of-words set.
     echo "Generating bulk testing data."
-    python preprocess.py trec07p 60001 75419 Data/test_bulk.arff -stopwords stopwords.txt
+    python preprocess.py trec07p 67878 75419 Data/test_bulk.arff -stopwords stopwords.txt
     
     # 3. Convert batch sets to standardized .arff files for Weka.
     echo "Converting bulk data to standardized data."

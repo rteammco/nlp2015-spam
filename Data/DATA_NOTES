@@ -1,3 +1,12 @@
+Data Splits:
+    Total:      75419   (100%)
+    Train:      67877   (90%)
+      NG-train: 61089   (81%)
+      NG-eval:  6788    (9%)
+    Test:       7542    (10%)
+
+
+
 *_bulk.arff:    Data output by the Python preprocessor. This data is just
                 full messages per feature.
 *_std.arff:     Data filtered by Weka, converting the full sentences into
@@ -7,6 +16,8 @@
 NGram/*:        Full text corpa (filtered) but with no stopwords removed.
                 The purpose of these files is to train NGram models and
                 evaluate the test data on them.
+
+
 
 Scrap:
 *_nostop.arff:  The old standardized files that have all the stopwords in them.

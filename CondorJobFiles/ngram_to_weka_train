@@ -14,7 +14,7 @@ Notify_user  = teammco@cs.utexas.edu
 
 Log = CondorLogs/ngram_to_weka.log
 
-Arguments = ngram_to_weka.py trec07p Data/NGramTrain 1 60000 Models/ config Data/train_ngram.arff
+Arguments = ngram_to_weka.py trec07p Data/NGramTrain 61090 67877 Models/ config Data/train_ngram.arff
 
 Output = CondorOutput/ngram_to_weka.out
 Error  = CondorOutput/ngram_to_weka.err
