@@ -4,7 +4,7 @@
 # executables in the environment path.
 #
 # Example useage:
-#   ./condor_submit CondorJobFiles/naivebayes
+#   $ ./condor_submit CondorJobFiles/naivebayes
 
 
 /lusr/opt/condor/bin/condor_submit "$@"
