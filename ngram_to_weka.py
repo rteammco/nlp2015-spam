@@ -51,7 +51,7 @@ def ngram_to_weka(args, models):
         model_type = model[0]
         n_vals = model[1]
         # Get the values for each message all N-values for this model.
-        values = []
+        value_sets = []
         for n_val in n_vals:
             model_name = 'N_' + str(n_val) + '_' + model_type
             ham_eval_fpath = args.in_dir + model_name + '_ham'
@@ -62,15 +62,16 @@ def ngram_to_weka(args, models):
             spam_eval_file = open(spam_eval_fpath, 'r')
             spam_vals = spam_eval_file.readlines()
             spam_eval_file.close()
-            values.append((ham_vals, spam_vals))
+            value_sets.append((ham_vals, spam_vals))
         # Process every message in the range.
         cur_outputs = []
         for num in range(args.range_start, args.range_end+1):
+            file_index = num - args.offset - 1
             label = labels[num-1]
             probs = []
-            for pair in values:
-                ham_prob = pair[0][num-1].strip()
-                spam_prob = pair[1][num-1].strip()
+            for pair in value_sets:
+                ham_prob = pair[0][file_index].strip()
+                spam_prob = pair[1][file_index].strip()
                 probs += [ham_prob, spam_prob]
             cur_outputs.append((num, label, probs))
         outputs = join_outputs(outputs, cur_outputs)
@@ -175,6 +176,8 @@ if __name__ == '__main__':
     parser.add_argument('N_vals', type=int, nargs='*',
                         help="A list of N values (N-Gram model types). Need " + \
                              "at least one unless using the 'config' option.")
+    parser.add_argument('--offset', type=int,
+                        help="Offset accounting for N-Gram training data (default 0).")
     args = parser.parse_args()
     if args.model_type == 'config':
         models = get_models_from_config(args)
@@ -188,8 +191,8 @@ if __name__ == '__main__':
         args.data_dir += '/'
     if not args.in_dir.endswith('/'):
         args.in_dir += '/'
-    if not args.model_dir.endswith('/'):
-        args.model_dir += '/'
+    if not args.offset:
+        args.offset = 0
     outputs = ngram_to_weka(args, models)
     #print models
     #for output in outputs:
