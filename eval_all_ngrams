@@ -9,9 +9,9 @@ JAVA_EXE="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
 CMD="$JAVA_EXE -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
 
 
-train_start=1
-train_end=60000
-test_start=60001
+train_start=61090
+train_end=67877
+test_start=67878
 test_end=75419
 
 N=$1
