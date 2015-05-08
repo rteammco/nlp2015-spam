@@ -37,7 +37,7 @@ do
     for class in ${classes[*]}
     do
         model="$t"_"$class"
-        in_file="Data/NGramTrain/train_$model"
+        in_file="Data/NGramTrain/$model"
         out_file="Models/N_"$N"_$model"
         arpa_file="$out_file.arpa"
         bin_file="$out_file.binary"

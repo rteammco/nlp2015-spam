@@ -35,9 +35,9 @@ outfile="Models/Evaluations/$full_model"
 rm -f $outfile
 
 for msg in $(seq $train_start $train_end); do
-    $CMD $binary $train_path/message_$msg 2> /dev/null 1>> $outfile;
+    $CMD $binary $train_path/message_$msg 1>> $outfile;
 done
 
 for msg in $(seq $test_start $test_end); do
-    $CMD $binary $test_path/message_$msg 2> /dev/null 1>> $outfile;
+    $CMD $binary $test_path/message_$msg 1>> $outfile;
 done

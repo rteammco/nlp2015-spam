@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Runs the build_ngram_models script for all combinations of N-Gram models
+# that we need to generate.
+
+bash build_ngram_models 3 lower_chars lower_words upper_chars upper_words
+
+bash build_ngram_models 4 lower_chars upper_chars
+
+bash build_ngram_models 5 lower_chars upper_chars

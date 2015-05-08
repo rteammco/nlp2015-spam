@@ -10,6 +10,10 @@
 #
 # Or, using the config file (see documentation in that file):
 #  $ python ngram_to_weka.py trec07p Models/Evaluations 60001 60003 Models config out.txt
+#
+# Actual run commands on 81/9/10 split (test and train .ARFFs):
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 61090 67877 config Data/train_ngram.arff --offset 61090
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 67878 75419 config Data/test_ngram.arff --offset 61090
 
 
 import argparse
