@@ -1,8 +1,16 @@
-Data Splits:
+Data Split: 81/9/10
     Total:      75419   (100%)  1 to 75419
     Train:      67877   (90%)   1 to 67877
       NG-train: 61089   (81%)   1 to 61089
       NG-eval:  6788    (9%)    61090 to 67877
+    Test:       7542    (10%)   67878 to 75419
+
+
+Data Split: 60/30/10
+    Total:      75419   (100%)  1 to 75419
+    Train:      67877   (90%)   1 to 67877
+      NG-train: 45252   (60%)   1 to 45252
+      NG-eval:  22625   (30%)   45253 to 67877
     Test:       7542    (10%)   67878 to 75419
 
 

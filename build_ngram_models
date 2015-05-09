@@ -13,6 +13,15 @@ java_path="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
 cp="berkeleylm-1.1.6/src"
 
 
+# Set these accordingly to the input data:
+# <<< DATA RANGE >>>
+split="Split_60_30_10"
+# <<< DATA RANGE >>>
+train_dir="Data/NGramTrain/$split"
+model_dir="Models/$split"
+
+
+# Set N from parameter (default 3).
 if [ -z "$1" ]; then
     N=3;
 else
@@ -20,6 +29,7 @@ else
 fi
 
 
+# Set types from parameters (default all).
 if [ -z "$2" ]; then
     types=(upper_words lower_words upper_chars lower_chars)
 else
@@ -37,8 +47,8 @@ do
     for class in ${classes[*]}
     do
         model="$t"_"$class"
-        in_file="Data/NGramTrain/$model"
-        out_file="Models/N_"$N"_$model"
+        in_file="$train_dir/$model"
+        out_file="$model_dir/N_"$N"_$model"
         arpa_file="$out_file.arpa"
         bin_file="$out_file.binary"
         echo "Generating $out_file..."

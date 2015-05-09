@@ -13,6 +13,7 @@ setup() {
     # 1, 2. Download all the stuff (you have to do this manually).
 
     # 3. Make all of the necessary directories if they don't exist.
+    # TODO - data split!
     mkdir -p Data/NGramTrain
     mkdir -p Data/NGramTest/lower_chars
     mkdir -p Data/NGramTest/lower_words

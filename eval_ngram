@@ -2,9 +2,16 @@
 
 cmd="java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
 
+
+# <<< DATA RANGE >>>
+model_dir="Models"
+# <<< DATA RANGE >>>
+
+
 msg=$1
 model=$2
 class=$3
+
 
 if [ -z "${msg}" ] || [ -z "${model}" ] || [ -z "${class}" ] ; then
     echo "Usage: \$ ./eval_ngram <message_number> <model> <class>"
@@ -13,7 +20,7 @@ if [ -z "${msg}" ] || [ -z "${model}" ] || [ -z "${class}" ] ; then
 fi
 N="3"
 
-binary="Models/N_${N}_${model}_${class}.binary"
+binary="$model_dir/N_${N}_${model}_${class}.binary"
 input="Data/NGramTest/${model}/message_$msg"
 
 echo $cmd $binary $input

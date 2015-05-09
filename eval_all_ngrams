@@ -9,10 +9,27 @@ JAVA_EXE="/u/teammco/Documents/Java/jdk1.8.0_40/bin/java"
 CMD="$JAVA_EXE -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream"
 
 
-train_start=61090
-train_end=67877
-test_start=67878
-test_end=75419
+# <<< DATA RANGE >>>
+split_81_9_10() {
+    train_start=61090
+    train_end=67877
+    test_start=67878
+    test_end=75419
+}
+
+split_60_30_10() {
+    train_start=45253
+    train_end=67877
+    test_start=67878
+    test_end=75419
+}
+
+split_60_30_10
+split="Split_60_30_10"
+# <<< DATA RANGE >>>
+train_dir="Data/NGramTrain/$split"
+model_dir="Models/$split"
+
 
 N=$1
 model=$2
@@ -24,15 +41,19 @@ if [ -z "${N}" ] || [ -z "${model}" ] || [ -z "${class}" ] ; then
     exit
 fi
 
-train_path="Data/NGramTrain/${model}"
+
+train_path="$train_dir/${model}"
 test_path="Data/NGramTest/${model}"
 
 full_model="N_${N}_${model}_${class}"
-binary="Models/${full_model}.binary"
+binary="$model_dir/${full_model}.binary"
 
-outfile="Models/Evaluations/$full_model"
+outfile="$model_dir/Evaluations/$full_model"
 
+
+mkdir -p $model_dir/Evaluations
 rm -f $outfile
+
 
 for msg in $(seq $train_start $train_end); do
     $CMD $binary $train_path/message_$msg 1>> $outfile;
