@@ -17,14 +17,26 @@ cp_weka="weka-3-6-12/weka.jar"
 cp_proj="."
 
 
-train_data="Data/train_std.arff"
-test_data="Data/test_std.arff"
-
-
 #classifier="weka.classifiers.rules.ZeroR"
-classifier="weka.classifiers.bayes.NaiveBayes"
+#classifier="weka.classifiers.bayes.NaiveBayes"
+classifier="weka.classifiers.bayes.NaiveBayesMultinomial"
 #classifier="weka.classifiers.functions.SMO"
 
 
-java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data
-#java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data -p 0
+run_ngrams() {
+    train_data="Data/train_ngram.arff"
+    test_data="Data/test_ngram.arff"
+    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -t $train_data -T $test_data
+}
+
+
+run_BoW() {
+    train_data="Data/train_std.arff"
+    test_data="Data/test_std.arff"
+    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data
+    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data -p 0
+}
+
+
+run_ngrams
+#run_BoW
