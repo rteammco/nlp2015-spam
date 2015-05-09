@@ -19,8 +19,8 @@ cp_proj="."
 
 #classifier="weka.classifiers.rules.ZeroR"
 #classifier="weka.classifiers.bayes.NaiveBayes"
-classifier="weka.classifiers.bayes.NaiveBayesMultinomial"
-#classifier="weka.classifiers.functions.SMO"
+#classifier="weka.classifiers.bayes.NaiveBayesMultinomial"
+classifier="weka.classifiers.functions.SMO"
 
 
 run_ngrams() {

@@ -1,0 +1,24 @@
+universe = vanilla
+
+Environment  = CLASSPATH=/scratch/cluster/teammco/CS388L_Proj/weka-3-6-12/weka.jar:/scratch/cluster/teammco/CS388L_Proj
+Initialdir   = /scratch/cluster/teammco/CS388L_Proj
+Executable   = /usr/local/bin/python
+Requirements = InMastodon
+
++Group   = "GRAD"
++Project = "INSTRUCTIONAL"
++ProjectDescription = "CS388L Final Project"
+
+Notification = complete
+Notify_user  = teammco@cs.utexas.edu
+
+
+Log = CondorLogs/preprocess_lengths.log
+
+Arguments = preprocess.py trec07p 1 75419 Data/lengths.txt -stopwords stopwords.txt --lengths
+
+Output = CondorOutput/preprocess_lengths.out
+Error  = CondorOutput/preprocess_lengths.err
+
+
+Queue 1

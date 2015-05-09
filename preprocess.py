@@ -117,6 +117,25 @@ def process_message(mime_file):
     return dict((key, val) for key, val in message.items()), body
 
 
+def output_length_file(messages, args):
+    """
+    Writes a file that contains the total message lengths for each email.
+    The file will have to space-separated numbers per line: the first is
+    the number of words in the message, and the second number is the number
+    of characters in that message.
+    The messages will not be numbered. It is recommended to only run this on
+    the entire data set at once.
+    """
+    outfile = open(args.outfile, 'w')
+    for pair in messages:
+        message = pair[0]
+        list_of_words = message.split()
+        num_words = len(list_of_words)
+        num_chars = len(''.join(list_of_words))
+        outfile.write(str(num_words) + " " + str(num_chars) + "\n")
+    outfile.close()
+
+
 def output_arff_file(messages, args):
     """Writes the message and label pairs to an ARFF file."""
     outfile = open(args.outfile, 'w')
@@ -224,6 +243,7 @@ def preprocess(args):
         header, body = process_message(mime_file)
         mime_file.close()
         messages.append((body, label))
+    # Handle N-Gram output option.
     if args.to_ngrams:
         if args.ngram_all:
             options = [ # name, lowercase?, characters?
@@ -241,6 +261,10 @@ def preprocess(args):
                 output_ngram_files(messages, args)
         else:
             output_ngram_files(messages, args)
+    # Handle length file output option.
+    elif args.to_lengths:
+        output_length_file(messages, args)
+    # Otherwise output regular bag of words .arff files.
     else:
         output_arff_file(messages, args)
 
@@ -282,7 +306,13 @@ if __name__ == '__main__':
                         help="Generates all 4 combinations of NGram options.")
     parser.add_argument('--ngram-test', dest='ngram_test', action='store_true', \
                         help="NGram output is formatted for test data instead.")
+    parser.add_argument('--lengths', dest='to_lengths', action='store_true', \
+                        help="Set to true to output length file instead.")
     args = parser.parse_args()
+    # Make sure only ngrams or lengths are specified, not both.
+    if args.to_lengths and args.to_ngrams:
+        print "ERROR: Please use --ngrams OR --lengths, but not both."
+        exit(0)
     if (not args.to_ngrams) and (args.swfile):
         load_stopwords(args.swfile)
     preprocess(args)

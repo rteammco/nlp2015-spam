@@ -12,8 +12,12 @@
 #  $ python ngram_to_weka.py trec07p Models/Evaluations 60001 60003 Models config out.txt
 #
 # Actual run commands on 81/9/10 split (test and train .ARFFs):
-#  $ python ngram_to_weka.py trec07p Models/Evaluations 61090 67877 config Data/train_ngram.arff --offset 61090
-#  $ python ngram_to_weka.py trec07p Models/Evaluations 67878 75419 config Data/test_ngram.arff --offset 61090
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 61090 67877 config Data/train_ngram_log.arff --offset 61090 --length-file Data/lengths.txt
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 67878 75419 config Data/test_ngram_log.arff --offset 61091 --length-file Data/lengths.txt
+#
+# And with real probabilities instead of log probs:
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 61090 67877 config Data/train_ngram.arff --offset 61090 --length-file Data/lengths.txt --real-probs
+#  $ python ngram_to_weka.py trec07p Models/Evaluations 67878 75419 config Data/test_ngram.arff --offset 61091 --length-file Data/lengths.txt --real-probs
 
 
 import argparse
@@ -89,7 +93,7 @@ def ngram_to_weka(args, models):
             for pair in value_sets:
                 ham_prob = eval(pair[0][file_index].strip())
                 spam_prob = eval(pair[1][file_index].strip())
-                if length:
+                if length and length > 0:
                     ham_prob /= length
                     spam_prob /= length
                 if args.real_probs:
