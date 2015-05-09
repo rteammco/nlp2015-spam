@@ -17,7 +17,7 @@
 
 
 import argparse
-import subprocess
+import math
 
 
 def join_outputs(outputs, new_outputs):
@@ -48,11 +48,20 @@ def ngram_to_weka(args, models):
     labels = label_file.readlines()
     label_file.close()
     labels = [label.split()[0] for label in labels]
+    # If a length file is provided, read those values in as well as a list
+    # of tuples: first element is number of words, the second is chars.
+    lengths = None
+    if args.length_file:
+        len_file = open(args.length_file, 'r')
+        lengths = len_file.readlines()
+        len_file.close()
+        lengths = [tuple(map(int, lens.split())) for lens in lengths]
     # Process each model separately, with all of its requested N values.
     outputs = []
     for model in models:
         print "Evaluating on model: " + str(model)
         model_type = model[0]
+        char_model = ('char' in model_type)
         n_vals = model[1]
         # Get the values for each message all N-values for this model.
         value_sets = []
@@ -72,10 +81,20 @@ def ngram_to_weka(args, models):
         for num in range(args.range_start, args.range_end+1):
             file_index = num - args.offset - 1
             label = labels[num-1]
+            length = None
+            if lengths:
+                length = lengths[num-1]
+                length = length[1] if char_model else length[0]
             probs = []
             for pair in value_sets:
-                ham_prob = pair[0][file_index].strip()
-                spam_prob = pair[1][file_index].strip()
+                ham_prob = eval(pair[0][file_index].strip())
+                spam_prob = eval(pair[1][file_index].strip())
+                if length:
+                    ham_prob /= length
+                    spam_prob /= length
+                if args.real_probs:
+                    ham_prob = math.exp(ham_prob)
+                    spam_prob = math.exp(spam_prob)
                 probs += [ham_prob, spam_prob]
             cur_outputs.append((num, label, probs))
         outputs = join_outputs(outputs, cur_outputs)
@@ -114,7 +133,7 @@ def write_arff_file(models, outputs, outfname):
         msg_class = output[1]
         features = output[2]
         for feature in features:
-            outfile.write(feature + ' ')
+            outfile.write(str(feature) + ' ')
         outfile.write(msg_class + '\n')
     outfile.close()
 
@@ -180,8 +199,14 @@ if __name__ == '__main__':
     parser.add_argument('N_vals', type=int, nargs='*',
                         help="A list of N values (N-Gram model types). Need " + \
                              "at least one unless using the 'config' option.")
-    parser.add_argument('--offset', type=int,
+    parser.add_argument('--offset', dest='offset', type=int,
                         help="Offset accounting for N-Gram training data (default 0).")
+    parser.add_argument('--length-file', dest='length_file',
+                        help="A specially formatted length file containing the " + \
+                             "lengths of all messages for both words and characters. " + \
+                             "If set, length will be taken into account.")
+    parser.add_argument('--real-probs', dest='real_probs', action='store_true', \
+                        help="Convert Log probabilities to real probabilities.")
     args = parser.parse_args()
     if args.model_type == 'config':
         models = get_models_from_config(args)
@@ -198,7 +223,4 @@ if __name__ == '__main__':
     if not args.offset:
         args.offset = 0
     outputs = ngram_to_weka(args, models)
-    #print models
-    #for output in outputs:
-    #    print output
     write_arff_file(models, outputs, args.outfile)
