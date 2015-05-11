@@ -24,8 +24,10 @@ classifier="weka.classifiers.functions.SMO"
 
 
 run_ngrams() {
-    train_data="Data/train_ngram.arff"
-    test_data="Data/test_ngram.arff"
+    split="60_30_10"
+    config="upper_chars_all"
+    train_data="Data/Split_$split/ngram_train_$config.arff"
+    test_data="Data/Split_$split/ngram_test_$config.arff"
     java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -t $train_data -T $test_data
 }
 

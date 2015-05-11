@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+split_type=$1
+outfile=$2
+
+if [ -z "${split_type}" ] | [ -z "${outfile}" ]; then
+    echo "Usage: ./do_ngram_to_weka <split type> <out name>"
+    echo "e.g. ./do_ngram_to_weka 60_30_10 all"
+    exit
+fi
+
+
+split_81_9_10() {
+    train_start=61090
+    train_end=67877
+    test_start=67878
+    test_end=75419
+    split="Split_81_9_10"
+}
+
+split_60_30_10() {
+    train_start=45253
+    train_end=67877
+    test_start=67878
+    test_end=75419
+    split="Split_60_30_10"
+}
+
+split_$split_type
+
+offset=$train_start
+
+
+echo "Converting training data..."
+python ngram_to_weka.py trec07p Models/$split/Evaluations $train_start $train_end config Data/$split/ngram_train_$outfile.arff --offset $offset --length-file Data/lengths.txt --real-probs --BoW-file Data/$split/BoW_bulk_train.arff
+
+echo "Converting test data..."
+python ngram_to_weka.py trec07p Models/$split/Evaluations $test_start $test_end config Data/$split/ngram_test_$outfile.arff --offset $offset --length-file Data/lengths.txt --real-probs --BoW-file Data/$split/BoW_bulk_test.arff
