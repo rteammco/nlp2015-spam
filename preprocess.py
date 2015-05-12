@@ -78,6 +78,11 @@ def process_text(text):
         if len(untagged) > 0:
             raw_words.append(untagged)
     # remove stopwords, numbers, and symbols:
+    # TODO - count number of words (feature)
+    # TODO - count number of characters (feature)
+    # TODO - count number of sentences (feature)
+    # TODO - number of images in the email
+    # TODO - number of external URLs in the email
     raw_words = filter_words(raw_words)
     raw_text = ' '.join(raw_words)
     return raw_text
@@ -91,17 +96,22 @@ def process_multipart(part):
     email body text strings (concatenated into a single string).
     """
     if type(part) is str:
-        return part
+        return part, 0
     maintype = part.get_content_maintype()
     if maintype == 'text':
-        return part.get_payload()
+        return part.get_payload(), 0
     elif maintype == 'multipart':
         text = ''
+        img_count = 0
         for sub_part in part.get_payload():
-            text += ' ' + process_multipart(sub_part)
-        return text
+            sub_text, sub_img_count = process_multipart(sub_part)
+            text += ' ' + sub_text
+            img_count += sub_img_count
+        return text, img_count
+    elif maintype == 'image':
+        return '', 1
     else:
-        return ''
+        return '', 0
 
 
 def process_message(mime_file):
@@ -111,10 +121,26 @@ def process_message(mime_file):
     """
     message = email.message_from_file(mime_file)
     body = ''
+    num_images = 0
     for part in message.walk():
-        body += process_multipart(part)
+        text, img_count = process_multipart(part)
+        body += text
+        num_images += img_count
     body = process_text(body)
-    return dict((key, val) for key, val in message.items()), body
+    raw_meta_data = dict((key, val) for key, val in message.items())
+    meta_data = dict()
+    meta_data['Num-Images'] = num_images
+    meta_data['Content-Length'] = raw_meta_data['Content-Length']
+    meta_data['Num-Lines'] = raw_meta_data['Lines']
+    #meta_data['Content-Type'] = raw_meta_data['Content-Type']
+    if 'Subject' in raw_meta_data.keys():
+        meta_data['Subject'] = raw_meta_data['Subject']
+    else:
+        meta_data['Subject'] = ''
+    for key in meta_data.keys():
+        print str(key) + ': ' + str(meta_data[key])
+    print "----------------------"
+    return meta_data, body
 
 
 def output_length_file(messages, args):
