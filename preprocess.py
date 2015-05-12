@@ -63,7 +63,10 @@ def process_text(text):
     words = text.split()
     intag = False
     raw_words = []
+    num_urls = 0
     for word in words:
+        if 'href' in word:
+            num_urls += 1
         untagged = ''
         for ch in word:
             if ch == '<':
@@ -82,10 +85,9 @@ def process_text(text):
     # TODO - count number of characters (feature)
     # TODO - count number of sentences (feature)
     # TODO - number of images in the email
-    # TODO - number of external URLs in the email
     raw_words = filter_words(raw_words)
     raw_text = ' '.join(raw_words)
-    return raw_text
+    return raw_text, num_urls
 
 
 def process_multipart(part):
@@ -126,10 +128,13 @@ def process_message(mime_file):
         text, img_count = process_multipart(part)
         body += text
         num_images += img_count
-    body = process_text(body)
+    body, num_urls = process_text(body)
     raw_meta_data = dict((key, val) for key, val in message.items())
     meta_data = dict()
+    # Add custom features to meta data.
     meta_data['Num-Images'] = num_images
+    meta_data['Num-URLs'] = num_urls
+    # Add other extracted features to meta data.
     meta_data['Content-Length'] = raw_meta_data['Content-Length']
     meta_data['Num-Lines'] = raw_meta_data['Lines']
     #meta_data['Content-Type'] = raw_meta_data['Content-Type']
