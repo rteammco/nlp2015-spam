@@ -24,21 +24,42 @@ classifier="weka.classifiers.functions.SMO"
 
 
 run_ngrams() {
+    ################
+    #config="combo_all_std"
+    config="ngram_all"
+    #class_feature="-c 17"
+    class_feature=""
+    ################
     split="60_30_10"
-    config="upper_chars_all"
-    train_data="Data/Split_$split/ngram_train_$config.arff"
-    test_data="Data/Split_$split/ngram_test_$config.arff"
-    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -t $train_data -T $test_data
+    train_data="Data/Split_$split/${config}_train.arff"
+    test_data="Data/Split_$split/${config}_test.arff"
+    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
 }
 
 
 run_BoW() {
     train_data="Data/train_std.arff"
     test_data="Data/test_std.arff"
-    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data
-    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data -p 0
+    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data
+    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data -p 0
 }
 
 
-run_ngrams
+# Make sure a command is provided.
+if [ -z "$1" ]; then
+    echo "Please provide a command: 'ngrams' or 'BoW'"
+    exit
+fi
+
+# If a classifier is given, use that instead.
+if [ "$2" = "svm" ]; then
+    classifier="weka.classifiers.functions.SMO"
+    echo "Using SVM."
+elif [ "$2" = "mnb" ]; then
+    classifier="weka.classifiers.bayes.NaiveBayesMultinomial"
+    echo "Using MNB."
+fi
+
+run_$1
+#run_ngrams
 #run_BoW

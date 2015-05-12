@@ -1,5 +1,7 @@
 trec07p.tgz
 trec07p/
+lingspam_public.tar.gz
+lingspam_public/
 weka-3-6-12/
 stanford-parser-full-2015-01-30/
 berkeleylm-1.1.5/
@@ -9,5 +11,5 @@ Models/
 Scrap/
 CondorOutput/
 CondorLogs/
-out.txt
+*out.txt
 *.swp

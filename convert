@@ -16,13 +16,12 @@
 
 
 
-train_bulk="Data/train_bulk.arff"
-train_std="Data/train_std.arff"
-test_bulk="Data/test_bulk.arff"
-test_std="Data/test_std.arff"
+train_bulk="Data/Split_60_30_10/combo_all_bulk_train.arff"
+test_bulk="Data/Split_60_30_10/combo_all_bulk_test.arff"
+train_std="Data/Split_60_30_10/combo_all_std_train.arff"
+test_std="Data/Split_60_30_10/combo_all_std_test.arff"
 
 filter="weka.filters.unsupervised.attribute.StringToWordVector"
-stopwords="stopwords.txt"
 
 cp_weka="weka-3-6-12/weka.jar"
 cp_proj="."
