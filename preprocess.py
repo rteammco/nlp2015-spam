@@ -80,14 +80,18 @@ def process_text(text):
                     untagged += ' '
         if len(untagged) > 0:
             raw_words.append(untagged)
+    # Set up some meta data features.
+    meta_data = dict()
+    # TODO - count number of sentences (feature)?
+    meta_data['Num-URLs'] = num_urls
+    meta_data['Num-Words'] = len(raw_words)
+    meta_data['Num-Chars'] = len(''.join(raw_words))
     # remove stopwords, numbers, and symbols:
-    # TODO - count number of words (feature)
-    # TODO - count number of characters (feature)
-    # TODO - count number of sentences (feature)
-    # TODO - number of images in the email
     raw_words = filter_words(raw_words)
+    meta_data['Num-Words-Filtered'] = len(raw_words)
+    meta_data['Num-Chars-Filtered'] = len(''.join(raw_words))
     raw_text = ' '.join(raw_words)
-    return raw_text, num_urls
+    return raw_text, meta_data
 
 
 def process_multipart(part):
@@ -128,15 +132,13 @@ def process_message(mime_file):
         text, img_count = process_multipart(part)
         body += text
         num_images += img_count
-    body, num_urls = process_text(body)
+    body, meta_data = process_text(body)
     raw_meta_data = dict((key, val) for key, val in message.items())
-    meta_data = dict()
     # Add custom features to meta data.
     meta_data['Num-Images'] = num_images
-    meta_data['Num-URLs'] = num_urls
     # Add other extracted features to meta data.
-    meta_data['Content-Length'] = raw_meta_data['Content-Length']
-    meta_data['Num-Lines'] = raw_meta_data['Lines']
+    #meta_data['Content-Length'] = raw_meta_data['Content-Length']
+    #meta_data['Num-Lines'] = raw_meta_data['Lines']
     #meta_data['Content-Type'] = raw_meta_data['Content-Type']
     if 'Subject' in raw_meta_data.keys():
         meta_data['Subject'] = raw_meta_data['Subject']
@@ -144,7 +146,6 @@ def process_message(mime_file):
         meta_data['Subject'] = ''
     for key in meta_data.keys():
         print str(key) + ': ' + str(meta_data[key])
-    print "----------------------"
     return meta_data, body
 
 
@@ -274,6 +275,7 @@ def preprocess(args):
         header, body = process_message(mime_file)
         mime_file.close()
         messages.append((body, label))
+        print "================================ Message " + str(num)
     # Handle N-Gram output option.
     if args.to_ngrams:
         if args.ngram_all:
