@@ -13,12 +13,12 @@ Notification = complete
 Notify_user  = teammco@cs.utexas.edu
 
 
-Log = CondorLogs/preprocess_BoW_test.log
+Log = CondorLogs/preprocess_BoW_meta_train.log
 
-Arguments = preprocess.py trec07p 67878 75419 Data/Split_60_30_10/BoW_bulk_test.arff -stopwords stopwords.txt
+Arguments = preprocess.py trec07p 45253 67877 Data/Split_60_30_10/BoW_meta_bulk_train.arff -stopwords stopwords.txt --use-meta
 
-Output = CondorOutput/preprocess_BoW_test.out
-Error  = CondorOutput/preprocess_BoW_test.err
+Output = CondorOutput/preprocess_BoW_meta_train.out
+Error  = CondorOutput/preprocess_BoW_meta_train.err
 
 
 Queue 1

@@ -46,6 +46,17 @@ test_dir="Data/NGramTest"
 cmd="python preprocess.py trec07p"
 
 
+# If stopwords are enabled, add that parameter
+if [ "$2" = "stopwords" ]; then
+    echo "Using STOPWORDS."
+    train_dir="${train_dir}/StopwordsRemoved"
+    test_dir="${test_dir}/StopwordsRemoved"
+    sw_param="-stopwords stopwords.txt"
+else
+    sw_param=""
+fi
+
+
 # Make all necessary directories if they don't already exist
 mkdir -p $train_dir/lower_chars
 mkdir -p $train_dir/lower_words
@@ -60,15 +71,15 @@ mkdir -p $test_dir/upper_words
 # Run the preprocessor on all of the data
 if [ -z "${1}" ] || [ "$1" -eq "1" ]; then
     echo "Preprocessing N-Gram TRAIN data."
-    $cmd $ng_train_start $ng_train_end $train_dir --ngrams --ngram-all
+    $cmd $ng_train_start $ng_train_end $train_dir --ngrams --ngram-all $sw_param
 fi
 if [ -z "${1}" ] || [ "$1" -eq "2" ]; then
     echo "Preprocessing N-Gram EVAL data."
-    $cmd $ng_eval_start $ng_eval_end $train_dir --ngrams --ngram-all --ngram-test
+    $cmd $ng_eval_start $ng_eval_end $train_dir --ngrams --ngram-all --ngram-test $sw_param
 fi
 if [ -z "${1}" ] || [ "$1" -eq "3" ]; then
     echo "Preprocessing N-Gram TEST data."
-    $cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test
+    $cmd $test_start $test_end $test_dir --ngrams --ngram-all --ngram-test $sw_param
 fi
 
 

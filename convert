@@ -17,8 +17,8 @@
 
 
 in_dir="Data/Split_60_30_10"
-bulk_fname="combo_all_meta_bulk"
-std_fname="combo_all_meta_std"
+bulk_fname="BoW_meta_bulk"
+std_fname="BoW_meta_std"
 
 #in_dir="Data/TestMeta"
 #bulk_fname="yes_meta"

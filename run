@@ -38,10 +38,12 @@ run_ngrams() {
 
 
 run_BoW() {
-    train_data="Data/Split_60_30_10/combo_all_meta_std_train.arff"
-    test_data="Data/Split_60_30_10/combo_all_meta_std_test.arff"
+    train_data="Data/Split_60_30_10/BoW_meta_std_train.arff"
+    test_data="Data/Split_60_30_10/BoW_meta_std_test.arff"
     #class_feature="-c 17"
-    class_feature="-c 23"
+    #class_feature="-c 23"
+    #class_feature="-c 1" # BoW_std
+    class_feature="-c 7" # BoW_meta_std
     java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
     #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data -p 0
 }
