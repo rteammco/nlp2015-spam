@@ -17,12 +17,12 @@
 
 
 in_dir="Data/Split_60_30_10"
-bulk_fname="combo_all_bulk"
-std_fname="combo_all_std"
+bulk_fname="combo_all_meta_bulk"
+std_fname="combo_all_meta_std"
 
-in_dir="Data/TestMeta"
-bulk_fname="yes_meta"
-std_fname="yes_meta_std"
+#in_dir="Data/TestMeta"
+#bulk_fname="yes_meta"
+#std_fname="yes_meta_std"
 
 train_bulk="${in_dir}/${bulk_fname}_train.arff"
 test_bulk="${in_dir}/${bulk_fname}_test.arff"

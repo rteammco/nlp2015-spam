@@ -107,8 +107,8 @@ def ngram_to_weka(args, models):
 
 def add_BoW_features(outputs, bow_file):
     """
-    Adds the text feature from a bulk .ARFF file to the existing features
-    from the N-Grams.
+    Adds the text and meta data features from a bulk .ARFF file to the
+    existing features from the N-Grams.
     """
     infile = open(bow_file, 'r')
     in_lines = infile.readlines()
@@ -121,8 +121,11 @@ def add_BoW_features(outputs, bow_file):
             continue
         elif data_section:
             data = line.split(",")
-            text = data[0]
-            outputs[index][2].insert(0, text)
+            # Copy all features except the "class" (spam or ham):
+            copied_features = []
+            for i in range(len(data)-1):
+                copied_features.append(data[i])
+            outputs[index][2][:0] = copied_features
             index += 1
         elif line.lower().find('@data') == 0:
             data_section = True
@@ -142,6 +145,8 @@ def copy_attributes(in_fname, outfile):
         if lwr_line.find('@attribute') == 0 and \
            lwr_line.find('spam_or_ham_class') < 0:
             outfile.write(line + "\n")
+        if lwr_line.find('@data') >= 0:
+            break
 
 
 def write_arff_file(models, outputs, outfname):
