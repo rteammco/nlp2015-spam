@@ -128,13 +128,16 @@ def process_message(mime_file):
     containing all of the extracted email meta data.
     """
     message = email.message_from_file(mime_file)
-    body = ''
-    num_images = 0
-    for part in message.walk():
-        text, img_count = process_multipart(part)
-        body += text
-        num_images += img_count
+    body, num_images = process_multipart(message)
+    print body
+    #body = ''
+    #num_images = 0
+    #for part in message.walk():
+    #    text, img_count = process_multipart(part)
+    #    body += text
+    #    num_images += img_count
     body, meta_data = process_text(body)
+    print body
     # Add custom features to meta data.
     meta_data['Num-Images'] = num_images
     # Add other extracted features to meta data.
