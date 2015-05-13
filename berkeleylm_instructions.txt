@@ -1,0 +1,46 @@
+ssh uvanimor-0
+
+
+
+Download/install BerkelyLM (use SVM to pull the latest version - see README on GitHub). Here we'll assume it's in a directory called "berkeleylm-1.1.6".
+
+
+
+Train a BERKELEY-LM 3-gram model on all lowercase words for HAM messages:
+
+java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText 3 trained_model.arpa /scratch/cluster/teammco/CS388L_Proj/Data/NGramTrain/Split_60_30_10/lower_words_ham
+
+
+
+Then, you need to convert the .arpa file to a .binary file:
+
+java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa trained_model.arpa trained_model.binary
+
+
+
+Train a BERKELEY-LM 5-gram model on all upper (mixed case) characters for SPAM messages:
+
+java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.MakeKneserNeyArpaFromText 5 trained_model2.arpa /scratch/cluster/teammco/CS388L_Proj/Data/NGramTrain/Split_60_30_10/upper_chars_spam
+
+java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.MakeLmBinaryFromArpa trained_model2.arpa trained_model2.binary
+
+
+
+Evaluate one of the example messages on the first BerkeleyLM binary model...
+NOTE - the training messages are numbered from 67878 to 75419 (last 10% of the data):
+
+java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream trained_model.binary /scratch/cluster/teammco/CS388L_Proj/Data/NGramTest/lower_words/message_67878
+
+
+
+Or on the second BerkeleyLM binary model:
+
+java -ea -mx1000m -server -cp berkeleylm-1.1.6/src edu.berkeley.nlp.lm.io.ComputeLogProbabilityOfTextStream trained_model2.binary /scratch/cluster/teammco/CS388L_Proj/Data/NGramTest/upper_chars/message_73002
+
+
+
+If you want to know what the messages in the NGramTest folder are (SPAM or HAM), check the file:
+
+/scratch/cluster/teammco/CS388L_Proj/trec07p/full/index
+
+They are labeled and numbered in order here. Again, note that the training data set starts with message 67878, NOT message 1.
