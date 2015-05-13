@@ -35,14 +35,16 @@ def filter_words(words):
     This is a word-by-word preprocessing step.
     """
     filtered = []
+    pos = 0
     for word in words:
         # Replace digits with arbitrary symbol, and split around it later
+        pos += 1
         word = re.sub(FLOAT_REGEX, SYMBOLS[0], word)
         split = False
         for symbol in SYMBOLS:
             if symbol in word:
                 parts = word.split(symbol)
-                words.extend(parts)
+                words[pos:pos] = parts
                 split = True
                 break
         if (not split) and (len(word) > 0) and (word.lower() not in STOPWORDS):
@@ -129,15 +131,7 @@ def process_message(mime_file):
     """
     message = email.message_from_file(mime_file)
     body, num_images = process_multipart(message)
-    print body
-    #body = ''
-    #num_images = 0
-    #for part in message.walk():
-    #    text, img_count = process_multipart(part)
-    #    body += text
-    #    num_images += img_count
     body, meta_data = process_text(body)
-    print body
     # Add custom features to meta data.
     meta_data['Num-Images'] = num_images
     # Add other extracted features to meta data.
