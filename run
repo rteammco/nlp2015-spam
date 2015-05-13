@@ -38,10 +38,16 @@ run_ngrams() {
 
 
 run_BoW() {
-    train_data="Data/train_std.arff"
-    test_data="Data/test_std.arff"
-    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data
-    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier -c 1 -t $train_data -T $test_data -p 0
+    #train_data="Data/train_std.arff"
+    #test_data="Data/test_std.arff"
+    train_data="Data/TestMeta/no_meta_std_train.arff"
+    test_data="Data/TestMeta/no_meta_std_test.arff"
+    class_feature="-c 1"
+    #train_data="Data/TestMeta/yes_meta_std_train.arff"
+    #test_data="Data/TestMeta/yes_meta_std_test.arff"
+    #class_feature="-c 7"
+    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
+    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data -p 0
 }
 
 

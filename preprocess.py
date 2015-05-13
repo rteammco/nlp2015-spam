@@ -143,7 +143,9 @@ def process_message(mime_file):
     #meta_data['Num-Lines'] = raw_meta_data['Lines']
     #meta_data['Content-Type'] = raw_meta_data['Content-Type']
     if 'Subject' in raw_meta_data.keys():
-        meta_data['Subject'] = raw_meta_data['Subject']
+        subject = raw_meta_data['Subject']
+        subject = ' '.join(filter_words(subject.split()))
+        meta_data['Subject'] = subject
     else:
         meta_data['Subject'] = ''
     return body, meta_data
@@ -192,12 +194,13 @@ def output_arff_file(messages, args):
     for triplet in messages:
         message = triplet[0]
         outfile.write("\"" + message + "\", ")
-        meta_data = triplet[1]
-        for key in meta_data:
-            if str(key) != 'Subject':
-                outfile.write(str(meta_data[key]) + ", ")
-        subject = '"' + meta_data['Subject'].replace('"', '\\"') + '"'
-        outfile.write(subject + ", ")
+        if args.use_meta:
+            meta_data = triplet[1]
+            for key in meta_data:
+                if str(key) != 'Subject':
+                    outfile.write(str(meta_data[key]) + ", ")
+            subject = '"' + meta_data['Subject'].replace('"', '\\"') + '"'
+            outfile.write(subject + ", ")
         label = triplet[2]
         outfile.write(label + "\n")
     outfile.close()

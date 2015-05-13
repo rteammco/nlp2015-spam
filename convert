@@ -16,10 +16,18 @@
 
 
 
-train_bulk="Data/Split_60_30_10/combo_all_bulk_train.arff"
-test_bulk="Data/Split_60_30_10/combo_all_bulk_test.arff"
-train_std="Data/Split_60_30_10/combo_all_std_train.arff"
-test_std="Data/Split_60_30_10/combo_all_std_test.arff"
+in_dir="Data/Split_60_30_10"
+bulk_fname="combo_all_bulk"
+std_fname="combo_all_std"
+
+in_dir="Data/TestMeta"
+bulk_fname="yes_meta"
+std_fname="yes_meta_std"
+
+train_bulk="${in_dir}/${bulk_fname}_train.arff"
+test_bulk="${in_dir}/${bulk_fname}_test.arff"
+train_std="${in_dir}/${std_fname}_train.arff"
+test_std="${in_dir}/${std_fname}_test.arff"
 
 filter="weka.filters.unsupervised.attribute.StringToWordVector"
 
