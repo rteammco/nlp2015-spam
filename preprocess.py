@@ -233,7 +233,7 @@ def output_arff_file(messages, args):
         if args.use_meta:
             meta_data = triplet[1]
             for key in meta_data:
-                if str(key) not in ('Subject', 'Num-GIFs', 'Num-JPGs', 'Num-PNGs'):
+                if str(key) != 'Subject':
                     outfile.write(str(meta_data[key]) + ", ")
             subject = '"' + meta_data['Subject'].replace('"', '\\"') + '"'
             outfile.write(subject + ", ")
@@ -348,7 +348,7 @@ def preprocess(args):
         mime_file.close()
         if args.normalize_features:
             for key in meta_data.keys():
-                if str(key) == 'Subject':
+                if str(key) in ('Subject', 'Num-GIFs', 'Num-JPGs', 'Num-PNGs'):
                     continue
                 if key in max_features:
                     max_features[key] = max(meta_data[key], max_features[key])
