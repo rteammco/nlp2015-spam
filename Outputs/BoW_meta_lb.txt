@@ -1,4 +1,4 @@
-Using LogitBoost.
+Using LogiBoost.
 
 
 === Predictions on test data ===
