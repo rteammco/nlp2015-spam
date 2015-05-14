@@ -17,12 +17,10 @@
 
 
 in_dir="Data/Split_60_30_10"
-bulk_fname="BoW_meta_bulk"
-std_fname="BoW_meta_std"
+bulk_fname="BoW_meta_img_bulk"
+std_fname="BoW_meta_img_std"
 
-#in_dir="Data/TestMeta"
-#bulk_fname="yes_meta"
-#std_fname="yes_meta_std"
+
 
 train_bulk="${in_dir}/${bulk_fname}_train.arff"
 test_bulk="${in_dir}/${bulk_fname}_test.arff"

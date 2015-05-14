@@ -1,18 +1,16 @@
 #!/bin/bash
 
 
-split_type=$1
-outfile=$2
+outfile=$1
+bulk_fname=$2
 
-if [ -z "${split_type}" ] | [ -z "${outfile}" ]; then
-    echo "Usage: ./do_ngram_to_weka <split type> <out name>"
-    echo "e.g. ./do_ngram_to_weka 60_30_10 combo_all"
+if [ -z "${outfile}" ]; then
+    echo "Usage: ./do_ngram_to_weka <out name> [in bulk file]"
+    echo "e.g. ./do_ngram_to_weka combo_all BoW_meta_bulk"
+    echo "e.g. ./do_ngram_to_weka ngram_all"
+    echo "Set the ngram_to_weka.config file as needed."
     exit
 fi
-
-
-# TODO - param
-bulk_fname="BoW_meta_bulk"
 
 
 split_81_9_10() {
@@ -31,13 +29,20 @@ split_60_30_10() {
     split="Split_60_30_10"
 }
 
-
-split_$split_type
+# >>>DATA SPLIT
+split_60_30_10
 offset=$train_start
 
 
+if [ -n "${bulk_fname}" ]; then
+    train_bulk_param="--BoW-file Data/$split/${bulk_fname}_train.arff"
+    test_bulk_param="--BoW-file Data/$split/${bulk_fname}_test.arff"
+    bulk="bulk_"
+fi
+
+
 echo "Converting training data..."
-python ngram_to_weka.py trec07p Models/$split/Evaluations $train_start $train_end config Data/$split/${outfile}_bulk_train.arff --offset $offset --length-file Data/lengths.txt --real-probs --BoW-file Data/$split/${bulk_fname}_train.arff
+python ngram_to_weka.py trec07p Models/$split/Evaluations $train_start $train_end config Data/$split/${outfile}_${bulk}train.arff --offset $offset --length-file Data/lengths.txt --real-probs $train_bulk_param
 
 echo "Converting test data..."
-python ngram_to_weka.py trec07p Models/$split/Evaluations $test_start $test_end config Data/$split/${outfile}_bulk_test.arff --offset $offset --length-file Data/lengths.txt --real-probs --BoW-file Data/$split/${bulk_fname}_test.arff
+python ngram_to_weka.py trec07p Models/$split/Evaluations $test_start $test_end config Data/$split/${outfile}_${bulk}test.arff --offset $offset --length-file Data/lengths.txt --real-probs $test_bulk_param

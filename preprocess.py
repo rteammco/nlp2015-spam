@@ -293,6 +293,17 @@ def output_ngram_files(messages, args):
             outfile.close()
 
 
+def normalize_features(messages, max_features):
+    """
+    Normalize all of the features (between 0 and 1) for each message based
+    on the maximum feature values in the max_features dictionary.
+    """
+    for message in messages:
+        for key in max_features:
+            if max_features[key] > 0:
+                message[1][key] = float(message[1][key]) / float(max_features[key])
+
+
 def preprocess(args):
     """
     Converts the data from each file in the given range into a single string
@@ -307,12 +318,21 @@ def preprocess(args):
     label_file.close()
     data_dir = args.data_dir + '/data'
     messages = []
+    max_features = dict()
     for num in range(args.range_start, args.range_end+1):
         label = labels[num-1].split()[0]
         fname = data_dir + '/inmail.' + str(num)
         mime_file = open(fname, 'r')
         body, meta_data = process_message(mime_file)
         mime_file.close()
+        if args.normalize_features:
+            for key in meta_data.keys():
+                if str(key) == 'Subject':
+                    continue
+                if key in max_features:
+                    max_features[key] = max(meta_data[key], max_features[key])
+                else:
+                    max_features[key] = meta_data[key]
         messages.append((body, meta_data, label))
         #print "================================ Message " + str(num)
     # Handle N-Gram output option.
@@ -338,6 +358,8 @@ def preprocess(args):
         output_length_file(messages, args)
     # Otherwise output regular bag of words .arff files.
     else:
+        if args.normalize_features:
+            normalize_features(messages, max_features)
         output_arff_file(messages, args)
 
 
@@ -382,6 +404,9 @@ if __name__ == '__main__':
                         help="Set to true to output length file instead.")
     parser.add_argument('--use-meta', dest='use_meta', action='store_true', \
                         help="Set to true to include meta data in .arff file.")
+    parser.add_argument('--normalize-features', dest='normalize_features', \
+                        action='store_true', \
+                        help="Set to true to normalize the meta data features.")
     args = parser.parse_args()
     # Make sure only ngrams or lengths are specified, not both.
     if args.to_lengths and args.to_ngrams:

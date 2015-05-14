@@ -24,28 +24,34 @@ classifier="weka.classifiers.functions.SMO"
 
 
 run_ngrams() {
-    ################
-    #config="combo_all_std"
-    config="ngram_all"
-    #class_feature="-c 17"
-    class_feature=""
-    ################
+    ###################################################
+    config="ngram_3word_lower"
+    class_feature="" # ngram (any)
+    ###################################################
     split="60_30_10"
     train_data="Data/Split_$split/${config}_train.arff"
     test_data="Data/Split_$split/${config}_test.arff"
-    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
+    cmd="java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data -p 0"
+    $cmd
+    echo $cmd
 }
 
 
 run_BoW() {
-    train_data="Data/Split_60_30_10/BoW_meta_std_train.arff"
-    test_data="Data/Split_60_30_10/BoW_meta_std_test.arff"
+    #train_data="Data/Split_60_30_10/combo_BoW_meta_345char_mixed_std_train.arff"
+    #test_data="Data/Split_60_30_10/combo_BoW_meta_345char_mixed_std_test.arff"
+    train_data="Data/Split_60_30_10/BoW_meta_img_std_train.arff"
+    test_data="Data/Split_60_30_10/BoW_meta_img_std_test.arff"
     #class_feature="-c 17"
     #class_feature="-c 23"
     #class_feature="-c 1" # BoW_std
-    class_feature="-c 7" # BoW_meta_std
-    java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
-    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data -p 0
+    class_feature="-c 8" # BoW_meta_img_std
+    #class_feature="-c 7" # BoW_meta_std, combo_BoW_345char
+    #class_feature="-c 13" # combo_BoW_meta_345char
+    #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
+    cmd="java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data -p 0"
+    $cmd
+    echo $cmd
 }
 
 
@@ -64,6 +70,6 @@ elif [ "$2" = "mnb" ]; then
     echo "Using MNB."
 fi
 
-run_$1
+run_$1 | python process_weka_output.py
 #run_ngrams
 #run_BoW
