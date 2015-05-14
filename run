@@ -16,17 +16,15 @@
 cp_weka="weka-3-6-12/weka.jar"
 cp_proj="."
 
-
-#classifier="weka.classifiers.rules.ZeroR"
-#classifier="weka.classifiers.bayes.NaiveBayes"
-#classifier="weka.classifiers.bayes.NaiveBayesMultinomial"
 classifier="weka.classifiers.functions.SMO"
 
 
 run_ngrams() {
     ###################################################
-    config="ngram_3word_lower"
-    class_feature="" # ngram (any)
+    #config="ngram_345char_mixed"
+    #class_feature="" # ngram (any)
+    config="BoW_std"
+    class_feature="-c 1"
     ###################################################
     split="60_30_10"
     train_data="Data/Split_$split/${config}_train.arff"
@@ -40,12 +38,15 @@ run_ngrams() {
 run_BoW() {
     #train_data="Data/Split_60_30_10/combo_BoW_meta_345char_mixed_std_train.arff"
     #test_data="Data/Split_60_30_10/combo_BoW_meta_345char_mixed_std_test.arff"
-    train_data="Data/Split_60_30_10/BoW_meta_img_std_train.arff"
-    test_data="Data/Split_60_30_10/BoW_meta_img_std_test.arff"
+    #train_data="Data/Split_60_30_10/BoW_meta_img_std_train.arff"
+    #test_data="Data/Split_60_30_10/BoW_meta_img_std_test.arff"
+    train_data="Data/Split_60_30_10/BoW_meta_img2_std_train.arff"
+    test_data="Data/Split_60_30_10/BoW_meta_img2_std_test.arff"
     #class_feature="-c 17"
     #class_feature="-c 23"
     #class_feature="-c 1" # BoW_std
-    class_feature="-c 8" # BoW_meta_img_std
+    class_feature="-c 10" # BoW_meta_img2_std
+    #class_feature="-c 8" # BoW_meta_img_std
     #class_feature="-c 7" # BoW_meta_std, combo_BoW_345char
     #class_feature="-c 13" # combo_BoW_meta_345char
     #java -Xmx1024m -cp "$cp_weka:$cp_proj" $classifier $class_feature -t $train_data -T $test_data
@@ -64,12 +65,16 @@ fi
 # If a classifier is given, use that instead.
 if [ "$2" = "svm" ]; then
     classifier="weka.classifiers.functions.SMO"
-    echo "Using SVM."
+    echo "Using Support Vector Machine (SMO)."
 elif [ "$2" = "mnb" ]; then
     classifier="weka.classifiers.bayes.NaiveBayesMultinomial"
-    echo "Using MNB."
+    echo "Using Multinomial Naive Bayes."
+elif [ "$2" = "nb" ]; then
+    classifier="weka.classifiers.bayes.NaiveBayes"
+    echo "Using Naive Bayes."
+elif [ "$2" = "lb" ]; then
+    classifier="weka.classifiers.meta.LogitBoost"
+    echo "Using LogiBoost."
 fi
 
 run_$1 | python process_weka_output.py
-#run_ngrams
-#run_BoW

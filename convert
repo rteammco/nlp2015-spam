@@ -17,8 +17,8 @@
 
 
 in_dir="Data/Split_60_30_10"
-bulk_fname="BoW_meta_img_bulk"
-std_fname="BoW_meta_img_std"
+bulk_fname="BoW_meta_img2_bulk"
+std_fname="BoW_meta_img2_std"
 
 
 

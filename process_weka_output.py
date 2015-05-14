@@ -37,11 +37,15 @@ def process_input(in_lines, predicted_class):
 
 if __name__ == '__main__':
     in_lines = []
+    outputs = []
     for line in sys.stdin:
         line = line.strip()
-        print line
+        outputs.append(line)
         in_lines.append(line)
     accuracy, precision, recall = process_input(in_lines, 'spam')
-    print "\n\n"
-    print "Accuracy / Precision / Recall:"
-    print str(accuracy) + " / " + str(precision) + " / " + str(recall)
+    outputs.append("\n\n")
+    outputs.append("Accuracy / Precision / Recall:")
+    outputs.append(str(accuracy) + " / " + str(precision) + " / " + str(recall))
+    outfile = open('out.txt', 'w')
+    for out in outputs:
+        outfile.write(out + "\n")
