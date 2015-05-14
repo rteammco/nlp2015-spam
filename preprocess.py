@@ -5,7 +5,6 @@ import sys
 import argparse
 import re
 import email
-from PIL import Image
 from collections import OrderedDict
 
 
@@ -104,35 +103,49 @@ def process_multipart(part):
     part is a string or text, returns the string. If it is a chunk of another
     multipart segment, it will recursively return all of the containing
     email body text strings (concatenated into a single string).
+    In addition, image info is returned: image info is a tuple as follows:
+    (total_number_images, num_gifs, num_jpgs, num_pngs, total_summed_size)
     """
     if type(part) is str:
-        return part, (0, 0)
+        return part, (0, 0, 0, 0, 0)
     maintype = part.get_content_maintype()
     if maintype == 'text':
-        return part.get_payload(), (0, 0)
+        return part.get_payload(), (0, 0, 0, 0, 0)
     elif maintype == 'multipart':
         text = ''
         img_count = 0
         img_size_total = 0
+        num_gifs = 0
+        num_jpgs = 0
+        num_pngs = 0
         for sub_part in part.get_payload():
             sub_text, sub_img_info = process_multipart(sub_part)
             text += ' ' + sub_text
             img_count += sub_img_info[0]
-            img_size_total += sub_img_info[1]
-        return text, (img_count, img_size_total)
+            num_gifs += sub_img_info[1]
+            num_jpgs += sub_img_info[2]
+            num_pngs += sub_img_info[3]
+            img_size_total += sub_img_info[4]
+        return text, (img_count, num_gifs, num_jpgs, num_pngs, img_size_total)
     elif maintype == 'image':
         fname = part.get_filename()
         if not fname:
             fname = 'NONE'
         if '.' in fname:
-            extension = fname.split('.')[1]
+            extension = fname.split('.')[1].lower()
         else:
             extension = 'NONE'
-        # TODO - how to incorporate extension???
+        gif = jpg = png = 0
+        if extension == "gif":
+            gif = 1
+        elif extension == "jpg" or extension == "jpeg":
+            jpg = 1
+        elif extension == "png":
+            png = 1
         img_size = len(part.get_payload(decode = True))
-        return '', (1, img_size)
+        return '', (1, gif, jpg, png, img_size)
     else:
-        return '', (0, 0)
+        return '', (0, 0, 0, 0, 0)
 
 
 def process_message(mime_file):
@@ -146,8 +159,16 @@ def process_message(mime_file):
     body, meta_data = process_text(body)
     # Add additional features to meta data. All message length values and
     # number of URLs in the message are added in the process_text function.
-    num_images, total_img_size = img_info
-    meta_data['Num-Images'] = num_images
+    num_images, num_gifs, num_jpgs, num_pngs, total_img_size = img_info
+    #meta_data['Num-Images'] = num_images
+    if num_images > 0:
+        meta_data['Num-GIFs'] = float(num_gifs) / float(num_images)
+        meta_data['Num-JPGs'] = float(num_jpgs) / float(num_images)
+        meta_data['Num-PNGs'] = float(num_pngs) / float(num_images)
+    else:
+        meta_data['Num-GIFs'] = 0
+        meta_data['Num-JPGs'] = 0
+        meta_data['Num-PNGs'] = 0
     avg_img_size = 0
     if num_images > 0:
         avg_img_size = float(total_img_size) / float(num_images)
@@ -212,7 +233,7 @@ def output_arff_file(messages, args):
         if args.use_meta:
             meta_data = triplet[1]
             for key in meta_data:
-                if str(key) != 'Subject':
+                if str(key) not in ('Subject', 'Num-GIFs', 'Num-JPGs', 'Num-PNGs'):
                     outfile.write(str(meta_data[key]) + ", ")
             subject = '"' + meta_data['Subject'].replace('"', '\\"') + '"'
             outfile.write(subject + ", ")
