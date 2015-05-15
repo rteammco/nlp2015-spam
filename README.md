@@ -44,7 +44,6 @@ Bag of Words Preprocessing and Experiments
     <code>Data/Split_60_30_10/BoW_bulk_train.arff -> Data/Split_60_30_10/BoW_std_train.arff</code><br>
     <code>Data/Split_60_30_10/BoW_bulk_test.arff -> Data/Split_60_30_10/BoW_std_test.arff</code><br>
     This can also be done using the Condor <code>CondorJobFiles/convert</code> submit file (but change the Java 8 path).</li>
-  <li><b>TODO - using metadata</b></li>
 </ol>
 
 
@@ -68,26 +67,7 @@ N-Gram Preprocessing and Experiments
       NOTE: You will need to modify the Java 8 path at the top of the <code>ngram_to_weka.py</code> file.<br>
     </ol>
   </li>
-  <li><b>TODO</b></li>
 </ol>
-
-
-Mixed Features Preprocessing and Experiments
-------
-
-<ol>
-  <li>TODO: preprocess test data to n-gram format.</li>
-  <li>TODO: evaluate each test email message on all of the spam and ham n-gram models.</li>
-  <li>TODO: run the Weka classifiers.</li>
-</ol>
-
-
-Data Preprocessor Documentation
-------
-
-<code>preprocess.py</code>
-
-TODO
 
 
 Data and Tool Resources
